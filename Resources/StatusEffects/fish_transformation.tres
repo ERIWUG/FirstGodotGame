@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="FishTransformationEffect" format=3 uid="uid://bvn5y0jan86cs"]
+[gd_resource type="Resource" script_class="FishTransformationEffect" format=3 uid="uid://dks7upfh3eabs"]
 
 [ext_resource type="Script" uid="uid://bvvclrh3jvqfx" path="res://Resources/EffectsCode/FishTransformationEffect.cs" id="1_r5btj"]
 [ext_resource type="Texture2D" uid="uid://dhy2johjra64q" path="res://Sprites/fish.png" id="1_w7y5d"]
@@ -13,4 +13,3 @@ TickInterval = 0.0
 IsDebuff = true
 PreventActions = true
 PreventMovement = true
-metadata/_custom_type_script = "uid://bvvclrh3jvqfx"

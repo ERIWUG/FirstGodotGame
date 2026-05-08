@@ -305,31 +305,15 @@ public partial class EnemyBehavior : Node
                     // Применяем эффект только если цель всё ещё существует
                     if (_currentTarget != null && IsInstanceValid(_currentTarget))
                     {
-                        if (_pendingSpell.Modifiers.Any(m => m.Type == ModifierType.Form && m.Id == "projectile"))
-                        {
-                            GD.Print($"[{UnitName}] Создаю projectile");
-                            var projectileScene = GD.Load<PackedScene>("res://Entitys/Specials/Projectile.tscn");
-                            var projectile = projectileScene.Instantiate<Projectile>();
-                            projectile.Position = _body.GlobalPosition;
-                            projectile.Source = _body;
-                            projectile.Damage = _pendingSpell.TotalManaCost * 2;
-                            var targetPos = _currentTarget.GlobalPosition;
-                            projectile.Velocity = (targetPos - _body.GlobalPosition).Normalized() * 300f;
-                            projectile.GlobalPosition = _body.GlobalPosition;
-                            GetTree().CurrentScene.AddChild(projectile);
-                        }
-                        else if (_pendingSpell.Modifiers.Any(m => m.Id == "explosion"))
-                        {
-                            var aoeScene = GD.Load<PackedScene>("res://Entitys/Specials/AoeEffect.tscn");
-                            var aoe = aoeScene.Instantiate<AoeEffect>();
-                            aoe.GlobalPosition = _currentTarget.GlobalPosition;
-                            aoe.Damage = _pendingSpell.TotalManaCost * 2;
-                            GetTree().CurrentScene.AddChild(aoe);
-                        }
+                        // ВСЕГДА вызываем CastSpell – это нанесёт урон и/или наложит статусы
+                        _skill.CastSpell(_pendingSpell, _currentTarget ?? _player);
+                        // Визуальные эффекты (снаряды/взрывы) временно убраны,
+                        // чтобы не дублировать урон. Они будут восстановлены позже
+                        // через отдельную систему визуализации.
                     }
                     EnterState(AIState.Attacking);
                 }
-                break; 
+                break;
             case AIState.MovingToPosition:
                 // Если враг рядом, немедленно вступаем в бой, забывая о точке назначения
                 AcquireTarget();

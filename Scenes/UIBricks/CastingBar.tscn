@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://gn84vpn5pfdf"]
+
+[ext_resource type="Script" uid="uid://3kikfjheiyt0" path="res://Controllers/UIScripts/CastingBar.cs" id="1_m3jse"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_65rcr"]
+bg_color = Color(0.11119685, 0.11119685, 0.11119678, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i88ox"]
+bg_color = Color(0.2231029, 0.2231029, 0.22310284, 1)
+
+[node name="CastingBar" type="Control" unique_id=1067602266]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_m3jse")
+
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=1998661467]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 6.0
+theme_override_styles/background = SubResource("StyleBoxFlat_65rcr")
+theme_override_styles/fill = SubResource("StyleBoxFlat_i88ox")
+show_percentage = false

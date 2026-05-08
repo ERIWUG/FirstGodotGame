@@ -1,0 +1,20 @@
+# Godot
+.godot/
+*.translation
+export_presets.cfg
+
+# C# и Mono
+bin/
+obj/
+*.user
+*.csproj.user
+*.DotSettings.user
+*.suo
+*.sln.docstates
+.vs/
+packages/
+
+# Общие
+*.log
+*.tmp
+Thumbs.db

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="StatusEffect" format=3 uid="uid://dhrjrith8hh08"]
+
+[ext_resource type="Script" uid="uid://bm6p607l7gjqk" path="res://Controllers/StatScripts/StatusEffect.cs" id="1_qakag"]
+
+[resource]
+script = ExtResource("1_qakag")
+Id = "fear"
+Name = "Страх"
+Duration = 4.0
+TickInterval = 0.0
+IsDebuff = true
+PreventActions = true
+metadata/_custom_type_script = "uid://bm6p607l7gjqk"

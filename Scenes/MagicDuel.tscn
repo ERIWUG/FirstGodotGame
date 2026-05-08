@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b70ubwr4uadab"]
+
+[ext_resource type="Script" uid="uid://bto0ges2phqr3" path="res://Controllers/MapsControllers/MagicDuel.cs" id="1_1j7gc"]
+
+[node name="MagicDuel" type="Node2D" unique_id=2011492107]
+script = ExtResource("1_1j7gc")

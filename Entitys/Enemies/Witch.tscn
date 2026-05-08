@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://cnlqnuawar8gu"]
+
+[ext_resource type="PackedScene" uid="uid://w20cx77pysc4" path="res://Entitys/Enemies/EnemyBase.tscn" id="1_8f1wd"]
+[ext_resource type="Texture2D" uid="uid://bef0i3pvdern" path="res://Sprites/Witch.png" id="2_lkg54"]
+[ext_resource type="Script" uid="uid://bkrnhpudetsmv" path="res://Controllers/StatScripts/SkillComponent.cs" id="3_vt2d4"]
+[ext_resource type="Script" uid="uid://duvphli0f7hsi" path="res://Controllers/StatScripts/ResourceComponent.cs" id="4_r6nn4"]
+[ext_resource type="Script" uid="uid://dcecugp0lqbey" path="res://Controllers/AI/EnemySkillManager.cs" id="5_r6nn4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vt2d4"]
+size = Vector2(23, 37)
+
+[node name="Witch" unique_id=457566220 instance=ExtResource("1_8f1wd")]
+
+[node name="HealthComponent" parent="." index="0" unique_id=1920272407]
+MaxHealth = 60.0
+
+[node name="EnemyBehavior" parent="." index="1" unique_id=1321453975]
+Courage = 50.0
+FearResistance = 40.0
+Speed = 90.0
+PreferredCastDistance = 350.0
+MinCastDistance = 100.0
+CanMelee = false
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="9" unique_id=650372569]
+texture_filter = 3
+position = Vector2(0, 3)
+texture = ExtResource("2_lkg54")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="10" unique_id=1950637574]
+position = Vector2(-1.5, 2.5)
+shape = SubResource("RectangleShape2D_vt2d4")
+
+[node name="SkillComponent" type="Node" parent="." index="11" unique_id=308765563]
+script = ExtResource("3_vt2d4")
+metadata/_custom_type_script = "uid://bkrnhpudetsmv"
+
+[node name="ResourceComponent" type="Node" parent="." index="12" unique_id=1270948695]
+script = ExtResource("4_r6nn4")
+BaseMP = 80.0
+metadata/_custom_type_script = "uid://duvphli0f7hsi"
+
+[node name="EnemySkillManager" type="Node" parent="." index="13" unique_id=1083102813]
+script = ExtResource("5_r6nn4")
+metadata/_custom_type_script = "uid://dcecugp0lqbey"

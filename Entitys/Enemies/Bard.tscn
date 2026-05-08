@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://drr8uywc0npmi"]
+
+[ext_resource type="PackedScene" uid="uid://w20cx77pysc4" path="res://Entitys/Enemies/EnemyBase.tscn" id="1_r7mx7"]
+[ext_resource type="Texture2D" uid="uid://bu0ft20m0qssv" path="res://Sprites/Bard.png" id="2_dh86g"]
+[ext_resource type="Script" uid="uid://bkrnhpudetsmv" path="res://Controllers/StatScripts/SkillComponent.cs" id="3_55dfu"]
+[ext_resource type="Script" uid="uid://duvphli0f7hsi" path="res://Controllers/StatScripts/ResourceComponent.cs" id="4_365j6"]
+[ext_resource type="Script" uid="uid://dcecugp0lqbey" path="res://Controllers/AI/EnemySkillManager.cs" id="5_365j6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_55dfu"]
+size = Vector2(34, 47)
+
+[node name="Bard" unique_id=457566220 instance=ExtResource("1_r7mx7")]
+
+[node name="HealthComponent" parent="." index="0" unique_id=1920272407]
+MaxHealth = 70.0
+
+[node name="EnemyBehavior" parent="." index="1" unique_id=1321453975]
+Courage = 50.0
+FearResistance = 40.0
+Speed = 80.0
+PreferredCastDistance = 350.0
+CanMelee = false
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="9" unique_id=1357774484]
+texture_filter = 3
+position = Vector2(0, 10)
+texture = ExtResource("2_dh86g")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="10" unique_id=1933736994]
+position = Vector2(0, 9.5)
+shape = SubResource("RectangleShape2D_55dfu")
+
+[node name="SkillComponent" type="Node" parent="." index="11" unique_id=454230434]
+script = ExtResource("3_55dfu")
+metadata/_custom_type_script = "uid://bkrnhpudetsmv"
+
+[node name="ResourceComponent" type="Node" parent="." index="12" unique_id=1573276797]
+script = ExtResource("4_365j6")
+BaseMP = 100.0
+metadata/_custom_type_script = "uid://duvphli0f7hsi"
+
+[node name="EnemySkillManager" type="Node" parent="." index="13" unique_id=1739801703]
+script = ExtResource("5_365j6")
+metadata/_custom_type_script = "uid://dcecugp0lqbey"

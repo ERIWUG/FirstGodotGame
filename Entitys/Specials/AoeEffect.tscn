@@ -1,0 +1,76 @@
+[gd_scene format=3 uid="uid://7a6suhahvfvg"]
+
+[ext_resource type="Script" uid="uid://bj1ynwdsu5nmo" path="res://Entitys/Specials/Controllers/AoeEffect.cs" id="1_71nka"]
+[ext_resource type="Texture2D" uid="uid://dp1skk02kembj" path="res://Entitys/Specials/Sprites/Red Effect Bullet Impact Explosion 32x32.png" id="2_h7rhl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2o6m2"]
+atlas = ExtResource("2_h7rhl")
+region = Rect2(512, 384, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_klq3j"]
+atlas = ExtResource("2_h7rhl")
+region = Rect2(544, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n75s3"]
+atlas = ExtResource("2_h7rhl")
+region = Rect2(576, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k6ub8"]
+atlas = ExtResource("2_h7rhl")
+region = Rect2(608, 352, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ssvex"]
+atlas = ExtResource("2_h7rhl")
+region = Rect2(544, 384, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s02yi"]
+atlas = ExtResource("2_h7rhl")
+region = Rect2(576, 384, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uiiws"]
+atlas = ExtResource("2_h7rhl")
+region = Rect2(608, 384, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cpnyi"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2o6m2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_klq3j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n75s3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k6ub8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ssvex")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s02yi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uiiws")
+}],
+"loop": true,
+"name": &"explode",
+"speed": 7.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_s1wno"]
+radius = 14.0
+
+[node name="AoeEffect" type="Area2D" unique_id=1316474048]
+script = ExtResource("1_71nka")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1915496060]
+texture_filter = 3
+sprite_frames = SubResource("SpriteFrames_cpnyi")
+animation = &"explode"
+frame_progress = 0.42562333
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1570786122]
+shape = SubResource("CircleShape2D_s1wno")

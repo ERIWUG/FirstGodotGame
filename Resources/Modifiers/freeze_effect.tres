@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://c7oybjvvyolvk"]
+
+[ext_resource type="Texture2D" uid="uid://b5ldmcmx4phmj" path="res://Sprites/Freeze.png" id="1_37uph"]
+[ext_resource type="Script" uid="uid://co7chnmg0f7w1" path="res://Controllers/SpellScripts/ModifierData.cs" id="1_si384"]
+
+[resource]
+script = ExtResource("1_si384")
+Id = "freeze"
+Name = "Заморозка"
+Icon = ExtResource("1_37uph")
+Type = 1
+RequiredElement = 2
+ManaCost = 8.0
+StatusEffectId = "freeze"
+StatusDuration = 4.0
+metadata/_custom_type_script = "uid://co7chnmg0f7w1"

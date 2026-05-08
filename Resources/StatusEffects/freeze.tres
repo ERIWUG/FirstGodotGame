@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="FreezeEffect" format=3 uid="uid://tfv23242nwsw"]
+
+[ext_resource type="Texture2D" uid="uid://b5ldmcmx4phmj" path="res://Sprites/Freeze.png" id="1_mha8v"]
+[ext_resource type="Script" uid="uid://27hlglqk4mb4" path="res://Resources/EffectsCode/FreezeEffect.cs" id="1_ss2xl"]
+
+[resource]
+script = ExtResource("1_ss2xl")
+Id = "freeze"
+Name = "Заморозка"
+Icon = ExtResource("1_mha8v")
+Duration = 4.0
+TickInterval = 0.0
+IsDebuff = true
+metadata/_custom_type_script = "uid://27hlglqk4mb4"

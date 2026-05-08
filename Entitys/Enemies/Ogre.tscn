@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://qv7qrl0svy8p"]
+
+[ext_resource type="PackedScene" uid="uid://w20cx77pysc4" path="res://Entitys/Enemies/EnemyBase.tscn" id="1_qglmn"]
+[ext_resource type="Texture2D" uid="uid://crj3wpf37gdhh" path="res://Sprites/Ogre.png" id="2_soq3y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y4vju"]
+size = Vector2(31, 57)
+
+[node name="Ogre" unique_id=457566220 instance=ExtResource("1_qglmn")]
+
+[node name="HealthComponent" parent="." index="0" unique_id=1920272407]
+MaxHealth = 200.0
+
+[node name="EnemyBehavior" parent="." index="1" unique_id=1321453975]
+Courage = 90.0
+FearResistance = 90.0
+Speed = 50.0
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="9" unique_id=1069474148]
+texture_filter = 3
+position = Vector2(0, 18)
+texture = ExtResource("2_soq3y")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="10" unique_id=1169980227]
+position = Vector2(-0.5, 17.5)
+shape = SubResource("RectangleShape2D_y4vju")

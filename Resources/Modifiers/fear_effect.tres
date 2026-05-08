@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://g3pryq58llns"]
+
+[ext_resource type="Script" uid="uid://co7chnmg0f7w1" path="res://Controllers/SpellScripts/ModifierData.cs" id="1_62qfb"]
+
+[resource]
+script = ExtResource("1_62qfb")
+Id = "fear"
+Name = "Страх"
+Type = 2
+ManaCost = 8.0
+DamageMultiplier = 0.0
+StatusEffectId = "fear"
+StatusDuration = 4.0
+metadata/_custom_type_script = "uid://co7chnmg0f7w1"

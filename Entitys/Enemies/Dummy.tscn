@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://bflceysnd83lm"]
+
+[ext_resource type="Texture2D" uid="uid://5qr1k58vg2ox" path="res://Sprites/Dummy.png" id="1_8jyaf"]
+[ext_resource type="Script" uid="uid://dsgsoa8vgyy4r" path="res://Controllers/StatScripts/CombatStatsComponent.cs" id="2_gmhnl"]
+[ext_resource type="Script" uid="uid://bnir237ta1sh8" path="res://Controllers/StatScripts/HealthComponent.cs" id="3_gt7ou"]
+[ext_resource type="Script" uid="uid://d4bvaf1d2chkl" path="res://Controllers/StatScripts/StatusEffectsComponent.cs" id="4_gmhnl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q3ldv"]
+size = Vector2(22, 31)
+
+[node name="Dummy" type="CharacterBody2D" unique_id=918646464]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=150641955]
+texture_filter = 3
+texture = ExtResource("1_8jyaf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=101612332]
+position = Vector2(1, -0.5)
+shape = SubResource("RectangleShape2D_q3ldv")
+
+[node name="CombatStatsComponent" type="Node" parent="." unique_id=1554509473]
+script = ExtResource("2_gmhnl")
+BaseStrength = 8.0
+
+[node name="HealthComponent" type="Node" parent="." unique_id=1742363163]
+script = ExtResource("3_gt7ou")
+MaxHealth = 50.0
+
+[node name="StatusIconsAnchor" type="Marker2D" parent="." unique_id=117543993]
+position = Vector2(-10, -19)
+
+[node name="StatusEffectsComponent" type="Node" parent="." unique_id=512723121]
+script = ExtResource("4_gmhnl")

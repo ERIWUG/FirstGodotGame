@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bet4upvbbjr5v"]
+
+[ext_resource type="Script" uid="uid://bvyhx0myaj82o" path="res://Controllers/UIScripts/FloatingNumber.cs" id="1_7thkh"]
+
+[node name="FloatingNumber" type="Label" unique_id=1971274279]
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("1_7thkh")

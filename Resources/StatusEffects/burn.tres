@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BurnEffect" format=3 uid="uid://dtcsvh0wdfby5"]
+
+[ext_resource type="Script" uid="uid://pvjtek74kgrf" path="res://Resources/EffectsCode/BurnEffect.cs" id="1_0nfox"]
+[ext_resource type="Texture2D" uid="uid://cvxr2kjq3xh7i" path="res://Sprites/fire_115156.png" id="1_3f635"]
+
+[resource]
+script = ExtResource("1_0nfox")
+Id = "burn"
+Name = "Горение"
+Icon = ExtResource("1_3f635")
+Duration = 5.0
+IsDebuff = true
+metadata/_custom_type_script = "uid://pvjtek74kgrf"

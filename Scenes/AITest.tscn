@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cgjd81x2wtok4"]
+
+[ext_resource type="Script" uid="uid://njjyv01gbvy2" path="res://Controllers/MapsControllers/AITestSetup.cs" id="1_vulni"]
+
+[node name="AITest" type="Node2D" unique_id=22223124]
+script = ExtResource("1_vulni")

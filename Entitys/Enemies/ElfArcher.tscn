@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://52yox5keka7d"]
+
+[ext_resource type="PackedScene" uid="uid://w20cx77pysc4" path="res://Entitys/Enemies/EnemyBase.tscn" id="1_rm04d"]
+[ext_resource type="Texture2D" uid="uid://daey0ipnvcusi" path="res://Sprites/Elf.png" id="2_cnu3l"]
+[ext_resource type="Script" uid="uid://bkrnhpudetsmv" path="res://Controllers/StatScripts/SkillComponent.cs" id="3_bgpri"]
+[ext_resource type="Script" uid="uid://duvphli0f7hsi" path="res://Controllers/StatScripts/ResourceComponent.cs" id="4_00fkg"]
+[ext_resource type="Script" uid="uid://dcecugp0lqbey" path="res://Controllers/AI/EnemySkillManager.cs" id="5_herut"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bgpri"]
+size = Vector2(29, 56)
+
+[node name="ElfArcher" unique_id=457566220 instance=ExtResource("1_rm04d")]
+
+[node name="HealthComponent" parent="." index="0" unique_id=1920272407]
+MaxHealth = 60.0
+
+[node name="EnemyBehavior" parent="." index="1" unique_id=1321453975]
+Courage = 60.0
+Speed = 110.0
+PreferredCastDistance = 450.0
+MinCastDistance = 150.0
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="9" unique_id=1181899471]
+texture_filter = 3
+position = Vector2(0, 13)
+texture = ExtResource("2_cnu3l")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="10" unique_id=1917700298]
+position = Vector2(-0.5, 13)
+shape = SubResource("RectangleShape2D_bgpri")
+
+[node name="SkillComponent" type="Node" parent="." index="11" unique_id=1517497299]
+script = ExtResource("3_bgpri")
+metadata/_custom_type_script = "uid://bkrnhpudetsmv"
+
+[node name="ResourceComponent" type="Node" parent="." index="12" unique_id=210858173]
+script = ExtResource("4_00fkg")
+BaseMP = 80.0
+metadata/_custom_type_script = "uid://duvphli0f7hsi"
+
+[node name="EnemySkillManager" type="Node" parent="." index="13" unique_id=1943236298]
+script = ExtResource("5_herut")

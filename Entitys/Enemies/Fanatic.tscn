@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://dk6ptxwp3ye5"]
+
+[ext_resource type="PackedScene" uid="uid://w20cx77pysc4" path="res://Entitys/Enemies/EnemyBase.tscn" id="1_58h7u"]
+[ext_resource type="Script" uid="uid://duvphli0f7hsi" path="res://Controllers/StatScripts/ResourceComponent.cs" id="2_u2f6q"]
+[ext_resource type="Script" uid="uid://bkrnhpudetsmv" path="res://Controllers/StatScripts/SkillComponent.cs" id="3_7n6fj"]
+[ext_resource type="Texture2D" uid="uid://8ndyfu712qhe" path="res://Sprites/Fanatic.png" id="4_7n6fj"]
+[ext_resource type="Script" uid="uid://dcecugp0lqbey" path="res://Controllers/AI/EnemySkillManager.cs" id="5_ie73g"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ie73g"]
+size = Vector2(22, 27)
+
+[node name="Fanatic" unique_id=457566220 instance=ExtResource("1_58h7u")]
+
+[node name="EnemyBehavior" parent="." index="1" unique_id=1321453975]
+FactionId = "shadow_cult"
+Courage = 80.0
+FearResistance = 60.0
+
+[node name="ResourceComponent" type="Node" parent="." index="6" unique_id=1668327090]
+script = ExtResource("2_u2f6q")
+metadata/_custom_type_script = "uid://duvphli0f7hsi"
+
+[node name="SkillComponent" type="Node" parent="." index="7" unique_id=156429323]
+script = ExtResource("3_7n6fj")
+metadata/_custom_type_script = "uid://bkrnhpudetsmv"
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="8" unique_id=259612482]
+texture_filter = 3
+texture = ExtResource("4_7n6fj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="9" unique_id=293374758]
+position = Vector2(-2, -0.5)
+shape = SubResource("RectangleShape2D_ie73g")
+
+[node name="EnemySkillManager" type="Node" parent="." index="13" unique_id=673524243]
+script = ExtResource("5_ie73g")
+metadata/_custom_type_script = "uid://dcecugp0lqbey"

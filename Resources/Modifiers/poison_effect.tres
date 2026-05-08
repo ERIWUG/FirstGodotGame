@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://va2mdwcqh6hx"]
+
+[ext_resource type="Script" uid="uid://co7chnmg0f7w1" path="res://Controllers/SpellScripts/ModifierData.cs" id="1_4gpyd"]
+[ext_resource type="Texture2D" uid="uid://b8n4a5xnf3xon" path="res://Sprites/poison.png" id="1_xbrh0"]
+
+[resource]
+script = ExtResource("1_4gpyd")
+Id = "poison"
+Name = "Яд"
+Icon = ExtResource("1_xbrh0")
+Type = 2
+RequiredElement = 6
+StatusEffectId = "poison"
+StatusDuration = 6.0
+metadata/_custom_type_script = "uid://co7chnmg0f7w1"

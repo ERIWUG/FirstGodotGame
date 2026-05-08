@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cy51qyaxok0oi"]
+
+[ext_resource type="Script" uid="uid://dtjpnovgs5qqa" path="res://Controllers/UIScripts/StatusIcon.cs" id="1_h4pb0"]
+
+[node name="StatusIcon" type="Sprite2D" unique_id=1548508185]
+script = ExtResource("1_h4pb0")

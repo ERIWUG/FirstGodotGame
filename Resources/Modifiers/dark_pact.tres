@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://cnxjh7bu663ur"]
+
+[ext_resource type="Script" uid="uid://co7chnmg0f7w1" path="res://Controllers/SpellScripts/ModifierData.cs" id="1_ehlsf"]
+
+[resource]
+script = ExtResource("1_ehlsf")
+Id = "dark_pact"
+Name = "Темный Пакт"
+Type = 2
+ManaCost = 15.0
+StatusEffectId = "dark_pact"
+StatusDuration = 10.0
+metadata/_custom_type_script = "uid://co7chnmg0f7w1"

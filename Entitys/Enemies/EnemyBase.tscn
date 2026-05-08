@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://w20cx77pysc4"]
+
+[ext_resource type="Script" uid="uid://bnir237ta1sh8" path="res://Controllers/StatScripts/HealthComponent.cs" id="2_yi3n2"]
+[ext_resource type="Script" uid="uid://d3rbof34euyjx" path="res://Controllers/AI/EnemyBehavior.cs" id="3_ucxfo"]
+[ext_resource type="Script" uid="uid://dsgsoa8vgyy4r" path="res://Controllers/StatScripts/CombatStatsComponent.cs" id="4_ucxfo"]
+[ext_resource type="Script" uid="uid://d4bvaf1d2chkl" path="res://Controllers/StatScripts/StatusEffectsComponent.cs" id="5_sphj0"]
+[ext_resource type="PackedScene" uid="uid://7712s1sh2pps" path="res://Scenes/UIBricks/HealthBar.tscn" id="6_sphj0"]
+[ext_resource type="Texture2D" uid="uid://cu4i03271ge7y" path="res://Sprites/Star.png" id="7_dnqxb"]
+[ext_resource type="PackedScene" uid="uid://gn84vpn5pfdf" path="res://Scenes/UIBricks/CastingBar.tscn" id="7_jxcxf"]
+
+[node name="EnemyBase" type="CharacterBody2D" unique_id=457566220]
+
+[node name="HealthComponent" type="Node" parent="." unique_id=1920272407]
+script = ExtResource("2_yi3n2")
+
+[node name="EnemyBehavior" type="Node" parent="." unique_id=1321453975]
+script = ExtResource("3_ucxfo")
+metadata/_custom_type_script = "uid://d3rbof34euyjx"
+
+[node name="CombatStatsComponent" type="Node" parent="." unique_id=1883667409]
+script = ExtResource("4_ucxfo")
+metadata/_custom_type_script = "uid://dsgsoa8vgyy4r"
+
+[node name="StatusEffectsComponent" type="Node" parent="." unique_id=742379851]
+script = ExtResource("5_sphj0")
+metadata/_custom_type_script = "uid://d4bvaf1d2chkl"
+
+[node name="HealthBar" parent="." unique_id=1043649535 instance=ExtResource("6_sphj0")]
+offset_left = -20.0
+offset_top = -36.0
+offset_right = -20.0
+offset_bottom = -36.0
+
+[node name="CastingBar" parent="." unique_id=1067602266 instance=ExtResource("7_jxcxf")]
+offset_left = -20.0
+offset_top = -26.0
+offset_right = -20.0
+offset_bottom = -26.0
+
+[node name="StatusIconAnchor" type="Marker2D" parent="." unique_id=887852372]
+position = Vector2(8, -45)
+
+[node name="CommanderMarkerAnchor" type="Marker2D" parent="." unique_id=1112710645]
+position = Vector2(-20, -45)
+
+[node name="CommanderCrown" type="Sprite2D" parent="." unique_id=1068108859]
+visible = false
+texture_filter = 3
+position = Vector2(-20, -44.999996)
+scale = Vector2(0.3125, 0.3125)
+texture = ExtResource("7_dnqxb")

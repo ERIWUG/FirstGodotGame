@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://knbfr22vn58b"]
+
+[ext_resource type="Script" uid="uid://dten7c2g2wpv0" path="res://Controllers/Player/PlayerController.cs" id="1_kmjql"]
+[ext_resource type="Texture2D" uid="uid://bt0necal4k60n" path="res://Sprites/PlayerDemo.png" id="1_pwcon"]
+[ext_resource type="Script" uid="uid://bnir237ta1sh8" path="res://Controllers/StatScripts/HealthComponent.cs" id="2_633ks"]
+[ext_resource type="Script" uid="uid://cd02u8pcqvo61" path="res://Controllers/StatScripts/LevelComponent.cs" id="3_37vbi"]
+[ext_resource type="Script" uid="uid://dsgsoa8vgyy4r" path="res://Controllers/StatScripts/CombatStatsComponent.cs" id="4_4xxgi"]
+[ext_resource type="Script" uid="uid://duvphli0f7hsi" path="res://Controllers/StatScripts/ResourceComponent.cs" id="5_2ysvy"]
+[ext_resource type="Script" uid="uid://d4bvaf1d2chkl" path="res://Controllers/StatScripts/StatusEffectsComponent.cs" id="6_kmjql"]
+[ext_resource type="Script" uid="uid://dgnd6ufpl0hdv" path="res://Controllers/StatScripts/SoulComponent.cs" id="7_2ysvy"]
+[ext_resource type="Script" uid="uid://b5itwmy6tqcf0" path="res://Controllers/StatScripts/ManaCoreComponent.cs" id="8_kmjql"]
+[ext_resource type="Script" uid="uid://di6xy1gav62o0" path="res://Controllers/SpellCrafterComponent.cs" id="9_aewb6"]
+[ext_resource type="Script" uid="uid://bkrnhpudetsmv" path="res://Controllers/StatScripts/SkillComponent.cs" id="10_ao8ny"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_aewb6"]
+size = Vector2(27, 26)
+
+[node name="Player" type="CharacterBody2D" unique_id=387022]
+script = ExtResource("1_kmjql")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1797637134]
+texture_filter = 3
+texture = ExtResource("1_pwcon")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1472969085]
+position = Vector2(0.5, -3)
+shape = SubResource("RectangleShape2D_aewb6")
+
+[node name="HealthComponent" type="Node" parent="." unique_id=1613199523]
+script = ExtResource("2_633ks")
+UseStatsForMaxHealth = true
+
+[node name="LevelComponent" type="Node" parent="." unique_id=1757292983]
+script = ExtResource("3_37vbi")
+
+[node name="CombatStatsComponent" type="Node" parent="." unique_id=828451528]
+script = ExtResource("4_4xxgi")
+BaseStrength = 12.0
+BaseDexterity = 14.0
+BaseConstitution = 11.0
+
+[node name="ResourceComponent" type="Node" parent="." unique_id=1204426552]
+script = ExtResource("5_2ysvy")
+UseStatsForMax = true
+
+[node name="StatusEffectsComponent" type="Node" parent="." unique_id=1277143638]
+script = ExtResource("6_kmjql")
+
+[node name="SoulComponent" type="Node" parent="." unique_id=964280534]
+script = ExtResource("7_2ysvy")
+
+[node name="ManaCoreComponent" type="Node" parent="." unique_id=1595219970]
+script = ExtResource("8_kmjql")
+
+[node name="SpellCrafterComponent" type="Node" parent="." unique_id=1202940411]
+script = ExtResource("9_aewb6")
+
+[node name="SkillComponent" type="Node" parent="." unique_id=181457661]
+script = ExtResource("10_ao8ny")

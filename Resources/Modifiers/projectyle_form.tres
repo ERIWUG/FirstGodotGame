@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://b2cqfv5emdo1g"]
+
+[ext_resource type="Script" uid="uid://co7chnmg0f7w1" path="res://Controllers/SpellScripts/ModifierData.cs" id="1_125r6"]
+
+[resource]
+script = ExtResource("1_125r6")
+Id = "projectile"
+Name = "Снаряд"
+metadata/_custom_type_script = "uid://co7chnmg0f7w1"

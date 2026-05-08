@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DarkPactEffect" format=3 uid="uid://bxwdofyy4pfec"]
+
+[ext_resource type="Script" uid="uid://bjotyp155kogw" path="res://Resources/EffectsCode/DarkPactEffect.cs" id="1_q0lj6"]
+
+[resource]
+script = ExtResource("1_q0lj6")
+Id = "dark_pact"
+Name = "Темный Пакт"
+metadata/_custom_type_script = "uid://bm6p607l7gjqk"

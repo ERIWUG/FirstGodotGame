@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://c7g6iq1t4ysi3"]
+
+[ext_resource type="Script" uid="uid://co7chnmg0f7w1" path="res://Controllers/SpellScripts/ModifierData.cs" id="1_d1gqj"]
+[ext_resource type="Texture2D" uid="uid://cvxr2kjq3xh7i" path="res://Sprites/fire_115156.png" id="1_sw1w1"]
+
+[resource]
+script = ExtResource("1_d1gqj")
+Id = "burn_effect"
+Name = "Горение"
+Icon = ExtResource("1_sw1w1")
+Type = 2
+RequiredElement = 1
+ManaCost = 3.0
+StatusEffectId = "burn"
+StatusDuration = 5.0
+metadata/_custom_type_script = "uid://co7chnmg0f7w1"

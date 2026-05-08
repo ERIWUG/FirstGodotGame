@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://bhyyhc1x4815v"]
+
+[ext_resource type="Script" uid="uid://co7chnmg0f7w1" path="res://Controllers/SpellScripts/ModifierData.cs" id="1_xu03w"]
+
+[resource]
+script = ExtResource("1_xu03w")
+Id = "explosion"
+Name = "Взрыв"
+ManaCost = 10.0
+DamageMultiplier = 0.7
+RadiusMultiplier = 2.0
+metadata/_custom_type_script = "uid://co7chnmg0f7w1"

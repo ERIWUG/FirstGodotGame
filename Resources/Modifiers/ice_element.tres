@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://bixtkohqudcba"]
+
+[ext_resource type="Script" uid="uid://co7chnmg0f7w1" path="res://Controllers/SpellScripts/ModifierData.cs" id="1_382s1"]
+[ext_resource type="Texture2D" uid="uid://dcvqsc7m0srnj" path="res://Sprites/ice.png" id="1_cr8xc"]
+
+[resource]
+script = ExtResource("1_382s1")
+Id = "ice"
+Name = "Лёд"
+Icon = ExtResource("1_cr8xc")
+Type = 1
+RequiredElement = 2
+ManaCost = 10.0
+DamageMultiplier = 0.8
+metadata/_custom_type_script = "uid://co7chnmg0f7w1"

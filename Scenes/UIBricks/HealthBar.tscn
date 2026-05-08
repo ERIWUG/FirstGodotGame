@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://7712s1sh2pps"]
+
+[ext_resource type="Script" uid="uid://cv44dkb35etk5" path="res://Controllers/UIScripts/HealthBar.cs" id="1_m32ms"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v6rev"]
+bg_color = Color(0.35686275, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h1cha"]
+bg_color = Color(0.8495601, 1.9974261e-06, 3.85046e-07, 1)
+
+[node name="HealthBar" type="Control" unique_id=1043649535]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_m32ms")
+
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=948380161]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 6.0
+theme_override_styles/background = SubResource("StyleBoxFlat_v6rev")
+theme_override_styles/fill = SubResource("StyleBoxFlat_h1cha")
+show_percentage = false

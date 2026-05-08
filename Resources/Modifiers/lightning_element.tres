@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://tva71vt6sc4"]
+
+[ext_resource type="Script" uid="uid://co7chnmg0f7w1" path="res://Controllers/SpellScripts/ModifierData.cs" id="1_gwsqw"]
+[ext_resource type="Texture2D" uid="uid://wbgf3qypk8u8" path="res://Sprites/lightning.png" id="1_rs3ll"]
+
+[resource]
+script = ExtResource("1_gwsqw")
+Id = "lightning"
+Name = "Молния"
+Icon = ExtResource("1_rs3ll")
+Type = 1
+RequiredElement = 5
+ManaCost = 12.0
+DamageMultiplier = 1.5
+metadata/_custom_type_script = "uid://co7chnmg0f7w1"

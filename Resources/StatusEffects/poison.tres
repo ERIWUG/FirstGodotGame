@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PoisonEffect" format=3 uid="uid://buafkrtc6jupl"]
+
+[ext_resource type="Script" uid="uid://bngpqg2fykqfs" path="res://Resources/EffectsCode/PoisonEffect.cs" id="1_acwyb"]
+[ext_resource type="Texture2D" uid="uid://b8n4a5xnf3xon" path="res://Sprites/poison.png" id="1_hc4ep"]
+
+[resource]
+script = ExtResource("1_acwyb")
+DamagePerTick = 3.0
+Id = "poison"
+Name = "Яд"
+Icon = ExtResource("1_hc4ep")
+Duration = 6.0
+TickInterval = 2.0
+IsDebuff = true
+metadata/_custom_type_script = "uid://bngpqg2fykqfs"

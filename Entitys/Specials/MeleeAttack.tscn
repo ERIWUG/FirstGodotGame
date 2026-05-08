@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://ctdjqnhq8emb0"]
+
+[ext_resource type="Texture2D" uid="uid://kuidwje2vgec" path="res://Entitys/Specials/Sprites/White Slash Thin/File1.png" id="1_6xbx3"]
+[ext_resource type="Script" uid="uid://dt2b0j0mf0t8l" path="res://Entitys/Specials/Controllers/MeleeAttack.cs" id="1_n70xf"]
+[ext_resource type="Texture2D" uid="uid://btbnxw8fbbpnn" path="res://Entitys/Specials/Sprites/White Slash Thin/File2.png" id="2_n70xf"]
+[ext_resource type="Texture2D" uid="uid://dnmwqh7k3y37i" path="res://Entitys/Specials/Sprites/White Slash Thin/File3.png" id="3_gh8qj"]
+[ext_resource type="Texture2D" uid="uid://cknfjyjape722" path="res://Entitys/Specials/Sprites/White Slash Thin/File4.png" id="4_1feny"]
+[ext_resource type="Texture2D" uid="uid://csk56qvcr5m6d" path="res://Entitys/Specials/Sprites/White Slash Thin/File5.png" id="5_p06mc"]
+[ext_resource type="Texture2D" uid="uid://x1majpewf14v" path="res://Entitys/Specials/Sprites/White Slash Thin/File6.png" id="6_v1cyp"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_eyesh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_6xbx3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_n70xf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_gh8qj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_1feny")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_p06mc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_v1cyp")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 24.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dfrly"]
+radius = 4.0
+height = 13.999999
+
+[node name="MeleeAttack" type="Area2D" unique_id=1647062033]
+script = ExtResource("1_n70xf")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1708824321]
+texture_filter = 3
+position = Vector2(5.7500005, -13.499999)
+scale = Vector2(0.022727272, 0.0875)
+sprite_frames = SubResource("SpriteFrames_eyesh")
+animation = &"attack"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1561835162]
+position = Vector2(7, -12)
+shape = SubResource("CapsuleShape2D_dfrly")

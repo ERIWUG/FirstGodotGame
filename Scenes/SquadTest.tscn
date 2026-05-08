@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://rhercn0hfuei"]
+
+[ext_resource type="Script" uid="uid://6yc7e18c5ygl" path="res://Controllers/MapsControllers/SquadTestSetup.cs" id="1_gl157"]
+
+[node name="SquadTest" type="Node2D" unique_id=1672831431]
+script = ExtResource("1_gl157")

@@ -81,6 +81,18 @@ public partial class EnemySkillManager : Node
         spell4.RecalculateStats();
         spell4.SpellName = "Тёмный Пакт";
         _skill.LearnSpell(spell4);
+
+        // --- Рыбное превращение ---
+        var iceElement = GD.Load<ModifierData>("res://Resources/Modifiers/ice_element.tres");
+        var fishTransformEffect = GD.Load<ModifierData>("res://Resources/Modifiers/fish_transform_effect.tres");
+        if (iceElement != null && fishTransformEffect != null)
+        {
+            var fishSpell = new SpellData();
+            fishSpell.Modifiers = new List<ModifierData> {  iceElement, fishTransformEffect, longCast };
+            fishSpell.RecalculateStats();
+            fishSpell.SpellName = "Превращение в рыбу";
+            _skill.LearnSpell(fishSpell);
+        }
     }
 
     private void LoadFireSpecialistSpells()

@@ -145,8 +145,12 @@ public partial class EnemyBehavior : Node
         var spells = _skill.GetKnownSpells();
         if (spells.Count == 0) return null;
 
-        // Временно для теста AoE: всегда использовать "Взрыв Хаоса"
-        return spells.Find(s => s.Modifiers.Any(m => m.Id == "explosion")) ?? spells[0];
+        // Ищем строго заклинание "Превращение в рыбу"
+        var fishSpell = spells.Find(s => s.SpellName == "Превращение в рыбу");
+        if (fishSpell != null) return fishSpell;
+
+        // Если не найдено (название отличается), возвращаем первое попавшееся
+        return spells[0];
     }
 
    /* private SpellData EvaluateSpell()

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://dv0o275sfghkq"]
+
+[ext_resource type="Script" uid="uid://co7chnmg0f7w1" path="res://Controllers/SpellScripts/ModifierData.cs" id="1_6cu4u"]
+
+[resource]
+script = ExtResource("1_6cu4u")
+Id = "fish_transform"
+Name = "Превращение в рыбу"
+Type = 2
+ManaCost = 15.0
+Cooldown = 8.0
+DamageMultiplier = 0.2
+StatusEffectId = "fish_transformation"
+StatusDuration = 5.0
+metadata/_custom_type_script = "uid://co7chnmg0f7w1"

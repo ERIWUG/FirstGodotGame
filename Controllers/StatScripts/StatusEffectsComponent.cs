@@ -53,6 +53,16 @@ public partial class StatusEffectsComponent : Node
         }
     }
 
+    public void ApplyEffectByIdWithCaster(string effectId, float duration, Node2D caster)
+    {
+        if (string.IsNullOrEmpty(effectId)) return;
+        string path = $"res://Resources/StatusEffects/{effectId}.tres";
+        if (!ResourceLoader.Exists(path)) return;
+        var effectResource = GD.Load<StatusEffect>(path);
+        if (effectResource == null) return;
+        
+        ApplyEffect(effectResource, caster); // вызывает новую перегрузку
+    }
     public bool HasEffect(string effectId)
     {
         foreach (var effect in _activeEffects)
@@ -114,6 +124,38 @@ public partial class StatusEffectsComponent : Node
                 RemoveEffect(effect);
             }
         }
+    }
+
+    public void ApplyEffect(StatusEffect effectTemplate, Node2D caster)
+    {
+        var effect = (StatusEffect)effectTemplate.Duplicate();
+        effect.RemainingDuration = effect.Duration;
+        effect.TickTimer = effect.TickInterval;
+
+        // Если это эффект поднятия – передаём фракцию кастера
+        if (effect is RaiseDeadEffect raiseDead && caster != null)
+        {
+            var casterBehavior = caster.GetNodeOrNull<EnemyBehavior>("EnemyBehavior");
+            if (casterBehavior != null)
+                raiseDead.CasterFaction = casterBehavior.FactionId;
+
+            // Ищем SquadCommander у кастера или его родителя
+            var casterSquad = caster.GetNodeOrNull<SquadCommander>("SquadCommander")
+                        ?? caster.GetParent().GetNodeOrNull<SquadCommander>("SquadCommander");
+            raiseDead.CasterSquad = casterSquad;
+        }
+
+        _activeEffects.Add(effect);
+
+        foreach (var modData in effect.StatModifiers)
+        {
+            var modifier = new StatModifier { Value = modData.Value, Type = modData.Type };
+            _stats.AddModifier(modData.StatName, modifier);
+        }
+
+        effect.ExecuteOnApply(this);
+        EmitSignal(SignalName.EffectApplied, effect.Id);
+        GD.Print($"{Owner.Name} получает эффект: {effect.Name} (ID: {effect.Id})");
     }
 
     public void ApplyEffect(StatusEffect effectTemplate)

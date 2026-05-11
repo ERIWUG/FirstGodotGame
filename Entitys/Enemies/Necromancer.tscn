@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://cwviswwq3tu1o"]
+
+[ext_resource type="PackedScene" uid="uid://w20cx77pysc4" path="res://Entitys/Enemies/EnemyBase.tscn" id="1_t45km"]
+[ext_resource type="Texture2D" uid="uid://qryiltabi6aj" path="res://Sprites/некромант пп.png" id="2_xpv3v"]
+[ext_resource type="Script" uid="uid://bkrnhpudetsmv" path="res://Controllers/StatScripts/SkillComponent.cs" id="3_8twj3"]
+[ext_resource type="Script" uid="uid://duvphli0f7hsi" path="res://Controllers/StatScripts/ResourceComponent.cs" id="4_vtugs"]
+[ext_resource type="Script" uid="uid://dcecugp0lqbey" path="res://Controllers/AI/EnemySkillManager.cs" id="5_cc8xy"]
+[ext_resource type="Script" uid="uid://1k1dhf42u4ea" path="res://Controllers/AI/NecromancerArchetype.cs" id="6_xpv3v"]
+[ext_resource type="Script" uid="uid://clvnd0epnwesn" path="res://Controllers/AI/SquadCommander.cs" id="7_8twj3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ncbgy"]
+size = Vector2(21, 33)
+
+[node name="Necromancer" unique_id=457566220 instance=ExtResource("1_t45km")]
+
+[node name="HealthComponent" parent="." index="0" unique_id=1920272407]
+MaxHealth = 150.0
+
+[node name="EnemyBehavior" parent="." index="1" unique_id=1321453975]
+Courage = 70.0
+Speed = 50.0
+CanMelee = false
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="9" unique_id=428581214]
+texture_filter = 3
+position = Vector2(0, 4)
+texture = ExtResource("2_xpv3v")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="10" unique_id=1044645812]
+position = Vector2(0.5, 1.5)
+shape = SubResource("RectangleShape2D_ncbgy")
+
+[node name="SkillComponent" type="Node" parent="." index="11" unique_id=1139056416]
+script = ExtResource("3_8twj3")
+metadata/_custom_type_script = "uid://bkrnhpudetsmv"
+
+[node name="ResourceComponent" type="Node" parent="." index="12" unique_id=1793146622]
+script = ExtResource("4_vtugs")
+metadata/_custom_type_script = "uid://duvphli0f7hsi"
+
+[node name="EnemySkillManager" type="Node" parent="." index="13" unique_id=262314459]
+script = ExtResource("5_cc8xy")
+SpellPresets = PackedStringArray("necromancer")
+metadata/_custom_type_script = "uid://dcecugp0lqbey"
+
+[node name="Archetype" type="Node" parent="." index="14" unique_id=1613213191]
+script = ExtResource("6_xpv3v")
+PreferredCastDistance = 400.0
+
+[node name="SquadCommander" type="Node" parent="." index="15" unique_id=118772653]
+script = ExtResource("7_8twj3")
+CommandRadius = 10.0
+metadata/_custom_type_script = "uid://clvnd0epnwesn"

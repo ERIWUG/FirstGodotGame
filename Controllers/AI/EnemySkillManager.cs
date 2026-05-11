@@ -32,6 +32,12 @@ public partial class EnemySkillManager : Node
                 case "fire_specialist":
                     LoadFireSpecialistSpells();
                     break;
+                case "healer":
+                    LoadHealerSpells();
+                    break;
+                case "necromancer":
+                    LoadNecromancerSpells();
+                    break;
                 // можно добавить другие пресеты
             }
         }
@@ -99,4 +105,61 @@ public partial class EnemySkillManager : Node
     {
         // Пример другого набора – можно реализовать позже
     }
+
+   private void LoadHealerSpells()
+    {
+        var projectile = GD.Load<ModifierData>("res://Resources/Modifiers/projectyle_form.tres");
+        var heal = GD.Load<ModifierData>("res://Resources/Modifiers/heal_element.tres");
+        var regen = GD.Load<ModifierData>("res://Resources/Modifiers/regen_effect.tres");
+        var longCast = GD.Load<ModifierData>("res://Resources/Modifiers/long_cast.tres");
+
+        if (projectile == null || heal == null || regen == null || longCast == null)
+        {
+            GD.PrintErr("EnemySkillManager: Не найдены модификаторы для пресета healer");
+            return;
+        }
+
+        // Исцеляющий луч
+        var healBeam = new SpellData();
+        healBeam.Modifiers = new List<ModifierData> { projectile, heal,longCast };
+        healBeam.RecalculateStats();
+        healBeam.SpellName = "Исцеляющий луч";
+        _skill.LearnSpell(healBeam);
+
+        // Благословение жизни (регенерация)
+        var blessing = new SpellData();
+        blessing.Modifiers = new List<ModifierData> { projectile, heal, regen, longCast };
+        blessing.RecalculateStats();
+        blessing.SpellName = "Благословение жизни";
+        _skill.LearnSpell(blessing);
+    }
+
+    private void LoadNecromancerSpells()
+{
+    var projectile = GD.Load<ModifierData>("res://Resources/Modifiers/projectyle_form.tres");
+    var darkness = GD.Load<ModifierData>("res://Resources/Modifiers/darkness_element.tres")
+                ?? GD.Load<ModifierData>("res://Resources/Modifiers/fire_element.tres");
+    var raiseDeadEffect = GD.Load<ModifierData>("res://Resources/Modifiers/raise_dead_effect.tres");
+    var longCast = GD.Load<ModifierData>("res://Resources/Modifiers/long_cast.tres");
+
+    if (projectile == null || darkness == null || raiseDeadEffect == null || longCast == null)
+    {
+        GD.PrintErr("EnemySkillManager: Не найдены модификаторы для пресета necromancer");
+        return;
+    }
+
+    // Тёмный разряд (базовый атакующий)
+    var spell1 = new SpellData();
+    spell1.Modifiers = new List<ModifierData> { projectile, darkness, longCast };
+    spell1.RecalculateStats();
+    spell1.SpellName = "Тёмный разряд";
+    _skill.LearnSpell(spell1);
+
+    // Поднять скелета
+    var raiseSpell = new SpellData();
+    raiseSpell.Modifiers = new List<ModifierData> { projectile, raiseDeadEffect, longCast };
+    raiseSpell.RecalculateStats();
+    raiseSpell.SpellName = "Поднять скелета";
+    _skill.LearnSpell(raiseSpell);
+}
 }

@@ -59,6 +59,8 @@ public partial class EnemyBehavior : Node
 
     private SquadCommander _mySquad;
 
+    private BaseArchetype _archetype;
+
     private Sprite2D _bodySprite;
     public string UnitNameOverride { get; set; }
     private string UnitName => UnitNameOverride ?? _body?.Name ?? (GetParent()?.Name ?? Name);
@@ -66,12 +68,14 @@ public partial class EnemyBehavior : Node
     public float GetCastDuration() => _pendingSpell?.TotalCastTime ?? 0f;
     public float GetCastElapsed() => _castTimer;
 
+    public SquadCommander Commander { get; set; }
+
    public override void _Ready()
     {
         _body = (CharacterBody2D)GetParent();
 
         _mySquad = GetParent().GetNodeOrNull<SquadCommander>("SquadCommander");
-    
+        _archetype = _body?.GetNodeOrNull<BaseArchetype>("Archetype");
         _health = GetNode<HealthComponent>("../HealthComponent");
         _skill = GetNodeOrNull<SkillComponent>("../SkillComponent");
         _resources = GetNodeOrNull<ResourceComponent>("../ResourceComponent");
@@ -82,7 +86,7 @@ public partial class EnemyBehavior : Node
         {
             CurrentState = AIState.Dead;
             string squadInfo = !string.IsNullOrEmpty(SquadName) ? $" (Отряд {SquadName})" : "";
-            GD.Print($"[DEBUG] SquadName={SquadName}");
+            
             SquadJournal.Instance?.AddEntry($"{UnitName}{squadInfo} пал в бою.");
             _body.QueueFree();
         };
@@ -103,7 +107,7 @@ public partial class EnemyBehavior : Node
             _currentTarget = null;
     }
 
-   private void TryCastSpell()
+   public void TryCastSpell()
     {
 
         if (!CanAct())
@@ -140,16 +144,27 @@ public partial class EnemyBehavior : Node
         _body.AddChild(instance);
     }
 
+    public void ForceTarget(Node2D target)
+    {
+        _followingOrder = true;
+        _currentTarget = target;
+    }
+
     private SpellData EvaluateSpell()
     {
         var spells = _skill.GetKnownSpells();
         if (spells.Count == 0) return null;
 
-        // Ищем строго заклинание "Превращение в рыбу"
-        var fishSpell = spells.Find(s => s.SpellName == "Превращение в рыбу");
-        if (fishSpell != null) return fishSpell;
+        // Если есть архетип, даём ему шанс выбрать заклинание (например, целитель выберет лечение)
+        if (_archetype != null)
+        {
+            var archetypeSpell = _archetype.SelectSpell(spells, _currentTarget);
+            if (archetypeSpell != null)
+                return archetypeSpell;
+        }
 
-        // Если не найдено (название отличается), возвращаем первое попавшееся
+        // Стандартная логика выбора атакующего заклинания (можно раскомментировать старый код или написать новый)
+        // Пока просто отдаём первое доступное (или можно приоритетно projectile > explosion > ...)
         return spells[0];
     }
 
@@ -264,6 +279,14 @@ public partial class EnemyBehavior : Node
                 MoveTowardTarget();
                 break;
             case AIState.Attacking:
+                if (_archetype != null)
+                {
+                    var overriddenTarget = _archetype.OverrideTarget(_currentTarget);
+                    if (overriddenTarget != _currentTarget && overriddenTarget != null)
+                    {
+                        _currentTarget = overriddenTarget;
+                    }
+                }
                 AttackTick(delta);
                 break;
             case AIState.Fleeing:
@@ -379,6 +402,9 @@ public partial class EnemyBehavior : Node
     // Главный метод, вызываемый командиром или внешним сигналом
     public void ExecuteOrder(OrderData order)
 	{
+
+        if (_archetype != null && _archetype.HandleOrder(order))
+            return;
         _followingOrder = (order.Target != null);
 
         if (order.Target != null)
@@ -609,8 +635,13 @@ public partial class EnemyBehavior : Node
 
     private void AttackTick(double delta)
     {
-         if (_currentTarget == null || !IsInstanceValid(_currentTarget)) return;
+          if (_currentTarget == null || !IsInstanceValid(_currentTarget)) return;
 
+        // Если есть архетип и он полностью обработал тик – выходим
+        if (_archetype != null && _archetype.ProcessAttack(this, delta))
+            return;
+
+        // Стандартная логика для обычных юнитов (маги, милишники)
         float dist = _body.GlobalPosition.DistanceTo(_currentTarget.GlobalPosition);
         bool canCast = (_skill != null && _resources != null && _skill.GetKnownSpells().Count > 0);
 
@@ -618,6 +649,7 @@ public partial class EnemyBehavior : Node
        
         if (canCast)
         {
+        
             if (!CanAct())
             {
                 EnterState(AIState.Fleeing);

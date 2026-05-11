@@ -11,6 +11,7 @@ public partial class SquadCommander : Node
     private EnemyBehavior _myBehavior;
     private List<EnemyBehavior> _squadMembers = new();
     private float _orderTimer;
+	private string _currentTactic = "";
 
 	public string SquadName { get; set; } = "Отряд";
 
@@ -31,6 +32,16 @@ public partial class SquadCommander : Node
 		if (crown != null)
 			crown.Visible = true;
     }
+
+	public void AddMember(EnemyBehavior member)
+	{
+		if (member != null && !_squadMembers.Contains(member))
+		{
+			_squadMembers.Add(member);
+			member.SquadName = this.SquadName;
+			member.Commander = this;
+		}
+	}
 
 	public void NotifyRetreat()
 	{
@@ -67,6 +78,7 @@ public partial class SquadCommander : Node
 			{
 				_squadMembers.Add(behavior);
 				behavior.SquadName = this.SquadName;   // ← даём имя отряда
+				behavior.Commander = this;
 			}
 			
 			 _initialTotal = _squadMembers.Count + 1;
@@ -101,201 +113,220 @@ public partial class SquadCommander : Node
 	}
 
  	public void IssueOrders()
-	{
-		if (_myBehavior == null) return;
+{
+    if (_myBehavior == null) return;
 
-		var myBody = GetParent<CharacterBody2D>();
-		var myBehavior = _myBehavior;
-		var myHealth = myBody.GetNode<HealthComponent>("HealthComponent");
+    var myBody = GetParent<CharacterBody2D>();
+    var myBehavior = _myBehavior;
+    var myHealth = myBody.GetNode<HealthComponent>("HealthComponent");
 
-		// Подсчитываем потери ДО очистки списка
-		int totalMembers = _initialTotal > 0 ? _initialTotal : _squadMembers.Count + 1; // +1 — сам командир
-		int aliveMembers = 1; // командир жив, если не в Dead
-		if (myBehavior.CurrentState == AIState.Dead) aliveMembers = 0;
+    // Переменная для отслеживания текущей тактики (дублируется в классе: private string _currentTactic = "")
+    // _currentTactic уже объявлена в классе SquadCommander
 
-		foreach (var member in _squadMembers)
-		{
-			if (IsInstanceValid(member) && member.CurrentState != AIState.Dead)
-				aliveMembers++;
-		}
+    // Подсчитываем потери ДО очистки списка
+    int totalMembers = _initialTotal > 0 ? _initialTotal : _squadMembers.Count + 1;
+    int aliveMembers = 1;
+    if (myBehavior.CurrentState == AIState.Dead) aliveMembers = 0;
 
-		// Удаляем мёртвых
-		CleanupSquad();
+    foreach (var member in _squadMembers)
+    {
+        if (IsInstanceValid(member) && member.CurrentState != AIState.Dead)
+            aliveMembers++;
+    }
 
-		// Отступление, если потеряли >= половину отряда
-		if (aliveMembers <= totalMembers / 2)
-		{
-			SquadJournal.Instance?.AddEntry($"Отряд {SquadName} отступает (потеряно больше половины бойцов).");
-			NotifyRetreat();
-			return;
-		}
+    CleanupSquad();
 
-		// 1. Тактика «Защита командира» – если лидер тяжело ранен
-		if (myHealth != null && myHealth.CurrentHealth / myHealth.MaxHealth < 0.3f)
-		{
-			SquadJournal.Instance?.AddEntry($"{SquadName} тяжело ранен! Отряд строит защиту.");
-			
-			myBehavior.ExecuteOrder(new OrderData { Type = OrderType.Retreat });
-			
-			var bodyguards = _squadMembers.Where(m => m.GetParent().Name.ToString().Contains("Knight") || m.GetParent().Name.ToString().Contains("Ogre")).ToList();
-			foreach (var guard in bodyguards)
-			{
-				Node2D closestEnemy = null;
-				float closestDist = 100f;
-				foreach (var node in GetTree().GetNodesInGroup("Enemies"))
-				{
-					if (node == myBody || node == guard.GetParent()) continue;
-					var body = node as CharacterBody2D;
-					if (body == null) continue;
-					var behavior = body.GetNodeOrNull<EnemyBehavior>("EnemyBehavior");
-					if (behavior == null || !FactionManager.AreHostile(myBehavior.FactionId, behavior.FactionId)) continue;
-					
-					float dist = guard.GetParent<CharacterBody2D>().GlobalPosition.DistanceTo(body.GlobalPosition);
-					if (dist < closestDist)
-					{
-						closestDist = dist;
-						closestEnemy = body;
-					}
-				}
-				if (closestEnemy != null)
-					guard.ExecuteOrder(new OrderData { Type = OrderType.Assault, Target = closestEnemy });
-				else
-					guard.ExecuteOrder(new OrderData { Type = OrderType.HoldPosition });
-			}
-			foreach (var member in _squadMembers)
-			{
-				if (!bodyguards.Contains(member) && IsInstanceValid(member))
-					member.ExecuteOrder(new OrderData { Type = OrderType.HoldPosition });
-			}
-			return;
-		}
+    // Отступление, если потеряли >= половину отряда
+    if (aliveMembers <= totalMembers / 2)
+    {
+        if (_currentTactic != "retreat")
+        {
+            SquadJournal.Instance?.AddEntry($"Отряд {SquadName} отступает (потеряно больше половины бойцов).");
+            _currentTactic = "retreat";
+        }
+        NotifyRetreat();
+        return;
+    }
 
-		// 3. Поиск вражеского командира
-		var target = myBehavior.GetCurrentTarget();
-		EnemyBehavior enemyCommander = null;
-		CharacterBody2D enemyCommanderBody = null;
-		foreach (var node in GetTree().GetNodesInGroup("Enemies"))
-		{
-			if (node == myBody) continue;
-			var body = node as CharacterBody2D;
-			if (body == null) continue;
-			var behavior = body.GetNodeOrNull<EnemyBehavior>("EnemyBehavior");
-			if (behavior == null || !FactionManager.AreHostile(myBehavior.FactionId, behavior.FactionId)) continue;
-			if (body.GetNodeOrNull<SquadCommander>("SquadCommander") != null)
-			{
-				enemyCommander = behavior;
-				enemyCommanderBody = body;
-				break;
-			}
-		}
+    // 1. Тактика «Защита командира» – если лидер тяжело ранен
+    if (myHealth != null && myHealth.CurrentHealth / myHealth.MaxHealth < 0.3f)
+    {
+        if (_currentTactic != "protect_commander")
+        {
+            SquadJournal.Instance?.AddEntry($"{SquadName} тяжело ранен! Отряд строит защиту.");
+            _currentTactic = "protect_commander";
+        }
 
-		bool commanderHasMagesNearby = false;
-		if (enemyCommander != null && enemyCommanderBody != null)
-		{
-			foreach (var node in GetTree().GetNodesInGroup("Enemies"))
-			{
-				if (node == enemyCommanderBody) continue;
-				var body = node as CharacterBody2D;
-				if (body == null) continue;
-				var behavior = body.GetNodeOrNull<EnemyBehavior>("EnemyBehavior");
-				if (behavior == null || behavior.FactionId != enemyCommander.FactionId) continue;
-				if (body.GetNodeOrNull<SkillComponent>("SkillComponent") != null &&
-					body.GlobalPosition.DistanceTo(enemyCommanderBody.GlobalPosition) < 200f)
-				{
-					commanderHasMagesNearby = true;
-					break;
-				}
-			}
-		}
+        myBehavior.ExecuteOrder(new OrderData { Type = OrderType.Retreat });
 
-		if (enemyCommander != null && !commanderHasMagesNearby)
-		{
-			SquadJournal.Instance?.AddEntry($"Отряд {SquadName} начинает охоту на вражеского командира {enemyCommander.UnitNameOverride}!");
-			foreach (var member in _squadMembers)
-				member.ExecuteOrder(new OrderData { Type = OrderType.Assault, Target = enemyCommander.GetParent() as Node2D });
-			return;
-		}
+        var bodyguards = _squadMembers.Where(m => m.GetParent().Name.ToString().Contains("Knight") || m.GetParent().Name.ToString().Contains("Ogre")).ToList();
+        foreach (var guard in bodyguards)
+        {
+            Node2D closestEnemy = null;
+            float closestDist = 100f;
+            foreach (var node in GetTree().GetNodesInGroup("Enemies"))
+            {
+                if (node == myBody || node == guard.GetParent()) continue;
+                var body = node as CharacterBody2D;
+                if (body == null) continue;
+                var behavior = body.GetNodeOrNull<EnemyBehavior>("EnemyBehavior");
+                if (behavior == null || !FactionManager.AreHostile(myBehavior.FactionId, behavior.FactionId)) continue;
 
-		// 4. Поиск вражеских магов
-		var enemyMages = new System.Collections.Generic.List<EnemyBehavior>();
-		foreach (var node in GetTree().GetNodesInGroup("Enemies"))
-		{
-			if (node == myBody) continue;
-			var body = node as CharacterBody2D;
-			if (body == null) continue;
-			var behavior = body.GetNodeOrNull<EnemyBehavior>("EnemyBehavior");
-			if (behavior == null || !FactionManager.AreHostile(myBehavior.FactionId, behavior.FactionId)) continue;
-			if (body.GetNodeOrNull<SkillComponent>("SkillComponent") != null)
-				enemyMages.Add(behavior);
-		}
+                float dist = guard.GetParent<CharacterBody2D>().GlobalPosition.DistanceTo(body.GlobalPosition);
+                if (dist < closestDist)
+                {
+                    closestDist = dist;
+                    closestEnemy = body;
+                }
+            }
+            if (closestEnemy != null)
+                guard.ExecuteOrder(new OrderData { Type = OrderType.Assault, Target = closestEnemy });
+            else
+                guard.ExecuteOrder(new OrderData { Type = OrderType.HoldPosition });
+        }
+        foreach (var member in _squadMembers)
+        {
+            if (!bodyguards.Contains(member) && IsInstanceValid(member))
+                member.ExecuteOrder(new OrderData { Type = OrderType.HoldPosition });
+        }
+        return;
+    }
 
-		if (enemyMages.Count > 0)
-		{
-			SquadJournal.Instance?.AddEntry($"Отряд {SquadName} отправляет смельчаков против вражеских магов.");
-			var braveMembers = _squadMembers.Where(m => m.Courage >= 60).ToList();
-			foreach (var mage in enemyMages)
-				foreach (var brave in braveMembers)
-					brave.ExecuteOrder(new OrderData { Type = OrderType.Assault, Target = mage.GetParent() as Node2D });
+    // 3. Поиск вражеского командира
+    var target = myBehavior.GetCurrentTarget();
+    EnemyBehavior enemyCommander = null;
+    CharacterBody2D enemyCommanderBody = null;
+    foreach (var node in GetTree().GetNodesInGroup("Enemies"))
+    {
+        if (node == myBody) continue;
+        var body = node as CharacterBody2D;
+        if (body == null) continue;
+        var behavior = body.GetNodeOrNull<EnemyBehavior>("EnemyBehavior");
+        if (behavior == null || !FactionManager.AreHostile(myBehavior.FactionId, behavior.FactionId)) continue;
+        if (body.GetNodeOrNull<SquadCommander>("SquadCommander") != null)
+        {
+            enemyCommander = behavior;
+            enemyCommanderBody = body;
+            break;
+        }
+    }
 
-			foreach (var member in _squadMembers)
-			{
-				if (braveMembers.Contains(member) || !IsInstanceValid(member)) continue;
-				if (target != null)
-					member.ExecuteOrder(new OrderData { Type = OrderType.Assault, Target = target, CommanderBonus = 25 });
-				else
-					member.ExecuteOrder(new OrderData { Type = OrderType.HoldPosition });
-			}
-			return;
-		}
+    bool commanderHasMagesNearby = false;
+    if (enemyCommander != null && enemyCommanderBody != null)
+    {
+        foreach (var node in GetTree().GetNodesInGroup("Enemies"))
+        {
+            if (node == enemyCommanderBody) continue;
+            var body = node as CharacterBody2D;
+            if (body == null) continue;
+            var behavior = body.GetNodeOrNull<EnemyBehavior>("EnemyBehavior");
+            if (behavior == null || behavior.FactionId != enemyCommander.FactionId) continue;
+            if (body.GetNodeOrNull<SkillComponent>("SkillComponent") != null &&
+                body.GlobalPosition.DistanceTo(enemyCommanderBody.GlobalPosition) < 200f)
+            {
+                commanderHasMagesNearby = true;
+                break;
+            }
+        }
+    }
 
-		
-		// 5. Стандартная тактика: охрана командира + атака
-		var mages = _squadMembers.Where(m => m.GetParent().GetNodeOrNull<SkillComponent>("SkillComponent") != null).ToList();
-		var guards = _squadMembers.Where(m => m.GetParent().Name.ToString().Contains("Knight") || m.GetParent().Name.ToString().Contains("Ogre")).ToList();
-		var attackers = _squadMembers.Except(guards).ToList();
-		if (target == null) return;
+    if (enemyCommander != null && !commanderHasMagesNearby)
+    {
+        if (_currentTactic != "focus_commander")
+        {
+            SquadJournal.Instance?.AddEntry($"Отряд {SquadName} начинает охоту на вражеского командира {enemyCommander.UnitNameOverride}!");
+            _currentTactic = "focus_commander";
+        }
+        foreach (var member in _squadMembers)
+            member.ExecuteOrder(new OrderData { Type = OrderType.Assault, Target = enemyCommander.GetParent() as Node2D });
+        return;
+    }
 
-		// Телохранители занимают позиции вокруг командира
-		Vector2 commanderPos = myBody.GlobalPosition;
-		foreach (var guard in guards)
-		{
-			// Ищем ближайшего врага к телохранителю, но остаёмся между командиром и врагом
-			Node2D closestEnemy = null;
-			float closestDist = 150f;
-			foreach (var node in GetTree().GetNodesInGroup("Enemies"))
-			{
-				if (node == myBody || node == guard.GetParent()) continue;
-				var body = node as CharacterBody2D;
-				if (body == null) continue;
-				var behavior = body.GetNodeOrNull<EnemyBehavior>("EnemyBehavior");
-				if (behavior == null || !FactionManager.AreHostile(myBehavior.FactionId, behavior.FactionId)) continue;
-				
-				float dist = guard.GetParent<CharacterBody2D>().GlobalPosition.DistanceTo(body.GlobalPosition);
-				if (dist < closestDist)
-				{
-					closestDist = dist;
-					closestEnemy = body;
-				}
-			}
-			if (closestEnemy != null)
-			{
-				Vector2 dir = (commanderPos - closestEnemy.GlobalPosition).Normalized();
-				Vector2 guardPos = commanderPos + dir * 60f; // 60 пикселей перед командиром
-				guard.ExecuteOrder(new OrderData { Type = OrderType.MoveTo, TargetPosition = guardPos });
-			}
-			else
-			{
-				guard.ExecuteOrder(new OrderData { Type = OrderType.HoldPosition });
-			}
-		}
+    // 4. Поиск вражеских магов
+    var enemyMages = new System.Collections.Generic.List<EnemyBehavior>();
+    foreach (var node in GetTree().GetNodesInGroup("Enemies"))
+    {
+        if (node == myBody) continue;
+        var body = node as CharacterBody2D;
+        if (body == null) continue;
+        var behavior = body.GetNodeOrNull<EnemyBehavior>("EnemyBehavior");
+        if (behavior == null || !FactionManager.AreHostile(myBehavior.FactionId, behavior.FactionId)) continue;
+        if (body.GetNodeOrNull<SkillComponent>("SkillComponent") != null)
+            enemyMages.Add(behavior);
+    }
 
-		// Все остальные (маги, наёмники, эльфы) атакуют цель
-		foreach (var member in attackers)
-		{
-			if (!IsInstanceValid(member)) continue;
-			member.ExecuteOrder(new OrderData { Type = OrderType.Assault, Target = target, CommanderBonus = 25 });
-		}
-	}
+    if (enemyMages.Count > 0)
+    {
+        if (_currentTactic != "hunt_mages")
+        {
+            SquadJournal.Instance?.AddEntry($"Отряд {SquadName} отправляет смельчаков против вражеских магов.");
+            _currentTactic = "hunt_mages";
+        }
+        var braveMembers = _squadMembers.Where(m => m.Courage >= 60).ToList();
+        foreach (var mage in enemyMages)
+            foreach (var brave in braveMembers)
+                brave.ExecuteOrder(new OrderData { Type = OrderType.Assault, Target = mage.GetParent() as Node2D });
+
+        foreach (var member in _squadMembers)
+        {
+            if (braveMembers.Contains(member) || !IsInstanceValid(member)) continue;
+            if (target != null)
+                member.ExecuteOrder(new OrderData { Type = OrderType.Assault, Target = target, CommanderBonus = 25 });
+            else
+                member.ExecuteOrder(new OrderData { Type = OrderType.HoldPosition });
+        }
+        return;
+    }
+
+    // 5. Стандартная тактика: охрана командира + атака
+    if (_currentTactic != "guard_mages")
+    {
+        SquadJournal.Instance?.AddEntry($"Отряд {SquadName} строит фалангу для защиты магов.");
+        _currentTactic = "guard_mages";
+    }
+    var mages = _squadMembers.Where(m => m.GetParent().GetNodeOrNull<SkillComponent>("SkillComponent") != null).ToList();
+    var guards = _squadMembers.Where(m => m.GetParent().Name.ToString().Contains("Knight") || m.GetParent().Name.ToString().Contains("Ogre")).ToList();
+    var attackers = _squadMembers.Except(guards).ToList();
+    if (target == null) return;
+
+    Vector2 commanderPos = myBody.GlobalPosition;
+    foreach (var guard in guards)
+    {
+        Node2D closestEnemy = null;
+        float closestDist = 150f;
+        foreach (var node in GetTree().GetNodesInGroup("Enemies"))
+        {
+            if (node == myBody || node == guard.GetParent()) continue;
+            var body = node as CharacterBody2D;
+            if (body == null) continue;
+            var behavior = body.GetNodeOrNull<EnemyBehavior>("EnemyBehavior");
+            if (behavior == null || !FactionManager.AreHostile(myBehavior.FactionId, behavior.FactionId)) continue;
+
+            float dist = guard.GetParent<CharacterBody2D>().GlobalPosition.DistanceTo(body.GlobalPosition);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closestEnemy = body;
+            }
+        }
+        if (closestEnemy != null)
+        {
+            Vector2 dir = (commanderPos - closestEnemy.GlobalPosition).Normalized();
+            Vector2 guardPos = commanderPos + dir * 60f;
+            guard.ExecuteOrder(new OrderData { Type = OrderType.MoveTo, TargetPosition = guardPos });
+        }
+        else
+        {
+            guard.ExecuteOrder(new OrderData { Type = OrderType.HoldPosition });
+        }
+    }
+
+    foreach (var member in attackers)
+    {
+        if (!IsInstanceValid(member)) continue;
+        member.ExecuteOrder(new OrderData { Type = OrderType.Assault, Target = target, CommanderBonus = 25 });
+    }
+}
 
 	private void ShowOrderLine(Vector2 from, Vector2 to)
 	{

@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://3cshjw7w6d4e"]
+
+[ext_resource type="PackedScene" uid="uid://w20cx77pysc4" path="res://Entitys/Enemies/EnemyBase.tscn" id="1_3exib"]
+[ext_resource type="Texture2D" uid="uid://bhw352uypooit" path="res://Sprites/Skeleton.png" id="2_kidn4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8j61l"]
+size = Vector2(23, 31)
+
+[node name="Skeleton" unique_id=457566220 instance=ExtResource("1_3exib")]
+
+[node name="EnemyBehavior" parent="." index="1" unique_id=1321453975]
+Courage = 200.0
+FearResistance = 200.0
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="9" unique_id=160267786]
+texture_filter = 3
+position = Vector2(0, 4)
+texture = ExtResource("2_kidn4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="10" unique_id=1032610324]
+position = Vector2(-0.5, 4.5)
+shape = SubResource("RectangleShape2D_8j61l")

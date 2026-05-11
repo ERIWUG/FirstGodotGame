@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://dx7t6vvx8udwb"]
+
+[ext_resource type="PackedScene" uid="uid://w20cx77pysc4" path="res://Entitys/Enemies/EnemyBase.tscn" id="1_at3xd"]
+[ext_resource type="Texture2D" uid="uid://bqobt4y17kkix" path="res://Sprites/GuardNew.png" id="2_otsyq"]
+[ext_resource type="Script" uid="uid://vh3c1qswujp3" path="res://Controllers/AI/AssassinArchetype.cs" id="3_otsyq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1onbm"]
+size = Vector2(20, 29)
+
+[node name="Assassin" unique_id=457566220 instance=ExtResource("1_at3xd")]
+
+[node name="EnemyBehavior" parent="." index="1" unique_id=1321453975]
+Courage = 80.0
+FearResistance = 60.0
+Speed = 150.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="6" unique_id=583462060]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_1onbm")
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="7" unique_id=1724031699]
+texture_filter = 3
+texture = ExtResource("2_otsyq")
+
+[node name="Archetype" type="Node" parent="." index="11" unique_id=563801615]
+script = ExtResource("3_otsyq")
+Speed = 150.0
+AvoidanceRadius = 70.0

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RegenEffect" format=3 uid="uid://cyeqlryxeqhke"]
+
+[ext_resource type="Script" uid="uid://d22oikfegqh16" path="res://Resources/EffectsCode/RegenEffect.cs" id="1_tbwh1"]
+
+[resource]
+script = ExtResource("1_tbwh1")
+Id = "regen"
+Name = "Регенерация"
+Duration = 6.0
+TickInterval = 2.0
+metadata/_custom_type_script = "uid://d22oikfegqh16"

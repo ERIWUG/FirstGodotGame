@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ModifierData" format=3 uid="uid://cw2wk706yxixk"]
+
+[ext_resource type="Script" uid="uid://co7chnmg0f7w1" path="res://Controllers/SpellScripts/ModifierData.cs" id="1_qyt5l"]
+
+[resource]
+script = ExtResource("1_qyt5l")
+Id = "heal"
+Name = "Свет"
+Type = 1
+ManaCost = 10.0
+DamageMultiplier = -3.0
+metadata/_custom_type_script = "uid://co7chnmg0f7w1"

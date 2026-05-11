@@ -24,8 +24,8 @@ public partial class SquadTestSetup : Node2D
         // Огр (1)
         SpawnEnemy("res://Entitys/Enemies/Ogre.tscn", new Vector2(200, 250), "shadow_cult");
         // Рыцари (2)
-        SpawnEnemy("res://Entitys/Enemies/Knight.tscn", new Vector2(250, 150), "shadow_cult");
-        SpawnEnemy("res://Entitys/Enemies/Knight.tscn", new Vector2(250, 550), "shadow_cult");
+        SpawnEnemy("res://Entitys/Enemies/Guardian.tscn", new Vector2(250, 150), "shadow_cult");
+        SpawnEnemy("res://Entitys/Enemies/Guardian.tscn", new Vector2(250, 550), "shadow_cult");
         // Бард (1)
         SpawnEnemy("res://Entitys/Enemies/Bard.tscn", new Vector2(180, 450), "shadow_cult");
         // Наёмник (1)
@@ -33,7 +33,11 @@ public partial class SquadTestSetup : Node2D
         // Эльф-лучник (1)
         SpawnEnemy("res://Entitys/Enemies/ElfArcher.tscn", new Vector2(300, 600), "shadow_cult");
         // Стражник (1)
-        SpawnEnemy("res://Entitys/Enemies/Guard.tscn", new Vector2(300, 350), "shadow_cult");
+        SpawnEnemy("res://Entitys/Enemies/Assassin.tscn", new Vector2(300, 350), "shadow_cult");
+
+        SpawnEnemy("res://Entitys/Enemies/Necromancer.tscn", new Vector2(180, 300), "shadow_cult");
+
+        
 
         // --- Отряд Б (наёмники) ---
         // Командир (Наёмник-лидер)
@@ -41,8 +45,8 @@ public partial class SquadTestSetup : Node2D
         // Огр (1)
         SpawnEnemy("res://Entitys/Enemies/Ogre.tscn", new Vector2(1000, 450), "mercenary");
         // Рыцари (2)
-        SpawnEnemy("res://Entitys/Enemies/Knight.tscn", new Vector2(950, 150), "mercenary");
-        SpawnEnemy("res://Entitys/Enemies/Knight.tscn", new Vector2(950, 550), "mercenary");
+        SpawnEnemy("res://Entitys/Enemies/Guardian.tscn", new Vector2(950, 150), "mercenary");
+        SpawnEnemy("res://Entitys/Enemies/Guardian.tscn", new Vector2(950, 550), "mercenary");
         // Эльф-лучник (1)
         SpawnEnemy("res://Entitys/Enemies/ElfArcher.tscn", new Vector2(1020, 250), "mercenary");
         // Ведьма (1)
@@ -50,7 +54,9 @@ public partial class SquadTestSetup : Node2D
         // Наёмник (1)
         SpawnEnemy("res://Entitys/Enemies/Mercenary.tscn", new Vector2(900, 100), "mercenary");
         // Стражник (1)
-        SpawnEnemy("res://Entitys/Enemies/Guard.tscn", new Vector2(900, 600), "mercenary");
+        SpawnEnemy("res://Entitys/Enemies/Assassin.tscn", new Vector2(900, 600), "mercenary");
+        SpawnEnemy("res://Entitys/Enemies/Healer.tscn", new Vector2(1100, 120), "mercenary");
+        SpawnEnemy("res://Entitys/Enemies/Healer.tscn", new Vector2(1100, 280), "mercenary");
 
         // UI
         var canvasLayer = new CanvasLayer();

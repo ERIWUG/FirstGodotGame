@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://ekhkc2loeuy7"]
+
+[ext_resource type="PackedScene" uid="uid://w20cx77pysc4" path="res://Entitys/Enemies/EnemyBase.tscn" id="1_wlsxs"]
+[ext_resource type="Script" uid="uid://bkrnhpudetsmv" path="res://Controllers/StatScripts/SkillComponent.cs" id="2_yceen"]
+[ext_resource type="Script" uid="uid://dcecugp0lqbey" path="res://Controllers/AI/EnemySkillManager.cs" id="3_p33j2"]
+[ext_resource type="Script" uid="uid://duvphli0f7hsi" path="res://Controllers/StatScripts/ResourceComponent.cs" id="4_18w8y"]
+[ext_resource type="Script" uid="uid://dvu72dy8fr7y7" path="res://Controllers/AI/HealerArchetype.cs" id="5_tbeh3"]
+[ext_resource type="Texture2D" uid="uid://dpm0ytp8u7nwt" path="res://Sprites/Healer.png" id="6_yceen"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p33j2"]
+size = Vector2(27, 25)
+
+[node name="Healer" unique_id=457566220 instance=ExtResource("1_wlsxs")]
+
+[node name="EnemyBehavior" parent="." index="1" unique_id=1321453975]
+Courage = 100.0
+MinCastDistance = 100.0
+CanMelee = false
+
+[node name="SkillComponent" type="Node" parent="." index="9" unique_id=1099723544]
+script = ExtResource("2_yceen")
+metadata/_custom_type_script = "uid://bkrnhpudetsmv"
+
+[node name="EnemySkillManager" type="Node" parent="." index="10" unique_id=454254071]
+script = ExtResource("3_p33j2")
+SpellPresets = PackedStringArray("healer")
+metadata/_custom_type_script = "uid://dcecugp0lqbey"
+
+[node name="ResourceComponent" type="Node" parent="." index="11" unique_id=883412720]
+script = ExtResource("4_18w8y")
+BaseMP = 100.0
+metadata/_custom_type_script = "uid://duvphli0f7hsi"
+
+[node name="Archetype" type="Node" parent="." index="12" unique_id=1451430476]
+script = ExtResource("5_tbeh3")
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="13" unique_id=58771673]
+texture_filter = 3
+texture = ExtResource("6_yceen")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="14" unique_id=11041394]
+position = Vector2(0.5, -2.5)
+shape = SubResource("RectangleShape2D_p33j2")

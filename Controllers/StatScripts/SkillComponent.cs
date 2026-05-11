@@ -91,24 +91,31 @@ public partial class SkillComponent : Node
         if (spell.TotalCooldown > 0)
             _cooldowns[spell.SpellName] = spell.TotalCooldown;
 
-        // Рассчитываем урон
         float basePower = GetSpellPower(spell.PrimaryElement);
         float finalDamage = basePower * spell.DamageMultiplier;
 
-        // Наносим урон, если цель имеет HealthComponent
         var targetHealth = target.GetNodeOrNull<HealthComponent>("HealthComponent");
         if (targetHealth != null)
         {
-            targetHealth.Damage(finalDamage);
+            if (finalDamage < 0) // отрицательный урон = лечение
+            {
+                targetHealth.Heal(-finalDamage);
+                DamageNumbers.Show(targetHealth.GetParent<Node2D>().GlobalPosition, -finalDamage, Colors.Green);
+            }
+            else
+            {
+                targetHealth.Damage(finalDamage);
+                DamageNumbers.Show(targetHealth.GetParent<Node2D>().GlobalPosition, finalDamage, Colors.Red);
+            }
         }
 
-        // Применяем статусные эффекты
+                // Применяем статусные эффекты
         foreach (var mod in spell.Modifiers)
         {
             if (!string.IsNullOrEmpty(mod.StatusEffectId))
             {
                 var targetStatus = target.GetNodeOrNull<StatusEffectsComponent>("StatusEffectsComponent");
-                targetStatus?.ApplyEffectById(mod.StatusEffectId, mod.StatusDuration);
+                targetStatus?.ApplyEffectByIdWithCaster(mod.StatusEffectId, mod.StatusDuration, Owner as Node2D);
             }
         }
 

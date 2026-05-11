@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RaiseDeadEffect" format=3 uid="uid://du503sqg258m5"]
+
+[ext_resource type="PackedScene" uid="uid://3cshjw7w6d4e" path="res://Entitys/Enemies/Skeleton.tscn" id="1_pocou"]
+[ext_resource type="Script" uid="uid://co5up4mi4flqd" path="res://Resources/EffectsCode/RaiseDeadEffect.cs" id="1_wi01p"]
+
+[resource]
+script = ExtResource("1_wi01p")
+SkeletonScene = ExtResource("1_pocou")
+Id = "raise_dead"
+Name = "Метка смерти"
+Duration = 10.0
+TickInterval = 0.0
+IsDebuff = true
+metadata/_custom_type_script = "uid://co5up4mi4flqd"

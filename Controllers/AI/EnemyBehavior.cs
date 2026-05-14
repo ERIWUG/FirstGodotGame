@@ -413,7 +413,7 @@ public partial class EnemyBehavior : Node
             AcquireTarget();
 
 		int weight = CalculateOrderWeight(order);
-		GD.Print($"[{UnitName}] Order: {order.Type}, Weight: {weight}");
+		
 
 		if (order.Type == OrderType.Assault)
         {

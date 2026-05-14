@@ -16,11 +16,11 @@ public partial class SquadJournal : Node
 
     public void AddEntry(string message)
     {
-        string timestamp = DateTime.Now.ToString("HH:mm:ss");
+        string timestamp = System.DateTime.Now.ToString("HH:mm:ss");
         string entry = $"[{timestamp}] {message}";
         _entries.Add(entry);
         EmitSignal(SignalName.EntryAdded, entry);
-        GD.Print($"JOURNAL: {entry}");
+        GD.Print($"[Journal] Entry added: {entry}"); // ← временно
     }
 
     public List<string> GetAllEntries() => new List<string>(_entries);

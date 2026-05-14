@@ -60,16 +60,39 @@ public partial class SquadTestSetup : Node2D
 
         // UI
         var canvasLayer = new CanvasLayer();
+        canvasLayer.Name = "CanvasLayer";
         AddChild(canvasLayer);
         _startButton = new Button { Text = "Начать бой", Position = new Vector2(10, 10) };
         _startButton.Pressed += OnStartBattle;
         canvasLayer.AddChild(_startButton);
 
+        var battleLogScene = GD.Load<PackedScene>("res://Scenes/UIBricks/BattleLog.tscn");
+        var battleLog = battleLogScene.Instantiate<BattleLog>();
+        canvasLayer.AddChild(battleLog);
+        battleLog.Position = new Vector2(900, 10); // пример позиции, можно настроить в сцене
+        GD.Print($"[DEBUG] BattleLog создан и добавлен: {battleLog.Name}, родитель: {battleLog.GetParent()?.Name}");
         // Собираем отряды заново, когда все уже созданы
         foreach (var enemy in GetTree().GetNodesInGroup("Enemies"))
         {
             var commander = enemy.GetNodeOrNull<SquadCommander>("SquadCommander");
             commander?.GatherSquad();
+        }
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (@event.IsActionPressed("ui_journal"))
+        {
+            GD.Print("[DEBUG] Клавиша J нажата!");
+            
+            var journal = GetNodeOrNull<BattleLog>("CanvasLayer/BattleLog");
+            if (journal == null)
+            {
+                GD.PrintErr("[DEBUG] Узел BattleLog НЕ НАЙДЕН в пути CanvasLayer/BattleLog");
+                return;
+            }
+            GD.Print("[DEBUG] Узел BattleLog найден, вызываю ToggleVisible...");
+            journal.ToggleVisible();
         }
     }
 

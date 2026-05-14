@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bquqyl7rf6xck"]
+
+[ext_resource type="Script" uid="uid://bgxwoh5gab8sm" path="res://Controllers/UIScripts/BattleLog.cs" id="1_a5ur7"]
+
+[node name="BattleLog" type="Panel" unique_id=668095979]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_a5ur7")

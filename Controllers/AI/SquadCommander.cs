@@ -9,6 +9,7 @@ public partial class SquadCommander : Node
     [Export] public float OrderInterval = 2.0f; // как часто обновляет приказы
 
     private EnemyBehavior _myBehavior;
+    public EnemyBehavior CommanderBehavior => _myBehavior;
     private List<EnemyBehavior> _squadMembers = new();
     private float _orderTimer;
 	private string _currentTactic = "";
@@ -25,12 +26,29 @@ public partial class SquadCommander : Node
 
     public override void _Ready()
     {
-       _myBehavior = GetParent().GetNode<EnemyBehavior>("EnemyBehavior");
+        _myBehavior = GetParent().GetNode<EnemyBehavior>("EnemyBehavior");
 
-		// Включаем иконку короны, если она есть
-		var crown = GetParent().GetNodeOrNull<Sprite2D>("CommanderCrown");
-		if (crown != null)
-			crown.Visible = true;
+        // Включаем иконку короны, если она есть
+        var crown = GetParent().GetNodeOrNull<Sprite2D>("CommanderCrown");
+        if (crown != null) crown.Visible = true;
+
+        // Подписываемся на смерть командира
+        var health = GetParent().GetNode<HealthComponent>("HealthComponent");
+        if (health != null)
+            health.HealthDepleted += OnCommanderDeath;
+    }
+
+// Обработчик гибели командира
+    private void OnCommanderDeath()
+    {
+        // Рассылаем приказ отступать всем выжившим
+        foreach (var member in _squadMembers)
+        {
+            if (member != null && IsInstanceValid(member))
+                member.ExecuteOrder(new OrderData { Type = OrderType.Retreat });
+        }
+        // Самоуничтожаемся, так как командир мёртв
+        QueueFree();
     }
 
 	public void AddMember(EnemyBehavior member)
@@ -44,15 +62,17 @@ public partial class SquadCommander : Node
 	}
 
 	public void NotifyRetreat()
-	{
-		if (_myBehavior == null) return;
-		foreach (var member in _squadMembers)
-		{
-			if (member != null && IsInstanceValid(member))
-				member.ExecuteOrder(new OrderData { Type = OrderType.Retreat });
-		}
-		_myBehavior.EnterState(AIState.Fleeing);
-	}
+    {
+        if (_myBehavior == null) return;
+        foreach (var member in _squadMembers)
+        {
+            if (member != null && IsInstanceValid(member))
+                member.ExecuteOrder(new OrderData { Type = OrderType.Retreat });
+        }
+        // Командир тоже отступает, если ещё жив
+        if (_myBehavior.CurrentState != AIState.Dead)
+            _myBehavior.EnterState(AIState.Fleeing);
+    }
 
     public void GatherSquad()
 	{

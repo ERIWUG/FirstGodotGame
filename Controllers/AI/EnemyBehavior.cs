@@ -12,7 +12,6 @@ public partial class EnemyBehavior : Node
     [Export] public string FactionId = "neutral";       // Идентификатор фракции
     [Export] public float Courage = 20.0f;              // Личная храбрость
     [Export] public float FearResistance = 30.0f;       // Порог, выше которого начинается паника
-    [Export] public float AttackCooldown = 1.0f;
     [Export] public float Speed = 100.0f;
     [Export] public float PreferredCastDistance = 300.0f;
 
@@ -40,7 +39,6 @@ public partial class EnemyBehavior : Node
     private CharacterBody2D _body;
     private HealthComponent _health;
     private Node2D _player;
-    private float _attackTimer;
     private float _currentFear = 0f; // Накопленный страх
 
     private int _hitCounter = 0;        // сколько раз ударили
@@ -52,21 +50,20 @@ public partial class EnemyBehavior : Node
 	private Vector2 _originalPosition;
     private SkillComponent _skill;
     private ResourceComponent _resources;
-
-    private float _castTimer;
-    private SpellData _pendingSpell;
+    public string DisplayName => UnitNameOverride ?? _body?.Name ?? (GetParent()?.Name ?? Name);
+    
     private Node2D _currentTarget;
 
     private SquadCommander _mySquad;
 
     private BaseArchetype _archetype;
+    private MovementController _movement;
+    private CombatController _combat;
+    private SpellController _spell;
 
     private Sprite2D _bodySprite;
     public string UnitNameOverride { get; set; }
     private string UnitName => UnitNameOverride ?? _body?.Name ?? (GetParent()?.Name ?? Name);
-    
-    public float GetCastDuration() => _pendingSpell?.TotalCastTime ?? 0f;
-    public float GetCastElapsed() => _castTimer;
 
     public SquadCommander Commander { get; set; }
 
@@ -80,6 +77,9 @@ public partial class EnemyBehavior : Node
         _skill = GetNodeOrNull<SkillComponent>("../SkillComponent");
         _resources = GetNodeOrNull<ResourceComponent>("../ResourceComponent");
         _player = GetTree().GetFirstNodeInGroup("Player") as Node2D;
+        _movement = _body?.GetNodeOrNull<MovementController>("MovementController");
+        _combat = _body?.GetNodeOrNull<CombatController>("CombatController");
+        _spell = _body?.GetNodeOrNull<SpellController>("SpellController");
 
         _statusIconScene = GD.Load<PackedScene>("res://Scenes/UIBricks/StatusIcon.tscn");
         _health.HealthDepleted += () =>
@@ -107,29 +107,7 @@ public partial class EnemyBehavior : Node
             _currentTarget = null;
     }
 
-   public void TryCastSpell()
-    {
-
-        if (!CanAct())
-            return;
-        if (_skill == null || _resources == null) return;
-        var chosen = EvaluateSpell();
-        if (chosen != null && _skill.CanCast(chosen))
-        {
-            if (chosen.TotalCastTime > 0f)
-            {
-                _pendingSpell = chosen;
-                _castTimer = 0f;
-                EnterState(AIState.Casting);
-                GD.Print($"[{UnitName}] Начинает каст {chosen.SpellName} ({chosen.TotalCastTime} с)");
-            }
-            else
-            {
-                _skill.CastSpell(chosen, _player);
-            }
-        }
-    }
-
+   
    private void ShowStatusIcon(Texture2D icon, Vector2 offset = default)
     {
         if (_statusIconScene == null || _body == null) return;
@@ -150,66 +128,7 @@ public partial class EnemyBehavior : Node
         _currentTarget = target;
     }
 
-    private SpellData EvaluateSpell()
-    {
-        var spells = _skill.GetKnownSpells();
-        if (spells.Count == 0) return null;
-
-        // Если есть архетип, даём ему шанс выбрать заклинание (например, целитель выберет лечение)
-        if (_archetype != null)
-        {
-            var archetypeSpell = _archetype.SelectSpell(spells, _currentTarget);
-            if (archetypeSpell != null)
-                return archetypeSpell;
-        }
-
-        // Стандартная логика выбора атакующего заклинания (можно раскомментировать старый код или написать новый)
-        // Пока просто отдаём первое доступное (или можно приоритетно projectile > explosion > ...)
-        return spells[0];
-    }
-
-   /* private SpellData EvaluateSpell()
-    {
-        var spells = _skill.GetKnownSpells();
-        if (spells.Count == 0) return null;
-
-        if (GD.Randf() < 0.3f)
-            return spells[GD.RandRange(0, spells.Count - 1)];
-
-        // 1. Если враг в ближнем бою и у него есть AoE-взрыв – используем его!
-        if (CurrentState == AIState.Attacking && _body.GlobalPosition.DistanceTo(_currentTarget.GlobalPosition) < 100)
-        {
-            var aoeSpell = spells.Find(s => s.Modifiers.Any(m => m.Id == "explosion"));
-            if (aoeSpell != null) return aoeSpell;
-        }
-
-        // 2. Если здоровье низкое, а есть бафф на себя – баффаемся!
-        if (_health.CurrentHealth / _health.MaxHealth < 0.4f)
-        {
-            var buffSpell = spells.Find(s => s.Modifiers.Any(m => m.Id == "dark_pact"));
-            if (buffSpell != null) return buffSpell;
-        }
-
-        // 3. Если есть заклинание контроля (страх) и цель далеко – кастуем!
-       var controlSpell = spells.Find(s => s.Modifiers.Any(m => m.StatusEffectId == "fear"));
-        if (controlSpell != null && _body.GlobalPosition.DistanceTo(_currentTarget.GlobalPosition) > 150)
-        {
-            // Проверяем, не боится ли уже цель
-            bool targetAlreadyFeared = false;
-            if (_currentTarget != null)
-            {
-                var targetStatus = _currentTarget.GetNodeOrNull<StatusEffectsComponent>("StatusEffectsComponent");
-                // Предполагаем, что у StatusEffectsComponent есть метод для проверки активного эффекта
-                targetAlreadyFeared = targetStatus?.HasEffect("fear") ?? false;
-            }
-            if (!targetAlreadyFeared)
-                return controlSpell;
-        }
-
-        // По умолчанию – атакующее заклинание
-        return spells.Count > 0 ? spells[0] : null;
-    }*/
-
+    
     private void AcquireTarget()
     {
 
@@ -276,7 +195,7 @@ public partial class EnemyBehavior : Node
         switch (CurrentState)
         {
             case AIState.Moving:
-                MoveTowardTarget();
+                _movement.MoveToward(_currentTarget);
                 break;
             case AIState.Attacking:
                 if (_archetype != null)
@@ -297,7 +216,7 @@ public partial class EnemyBehavior : Node
                 EnterState(AIState.Idle);
                 break;
             }
-            FleeFromPlayer();
+            _movement.FleeFrom(_currentTarget);
             if (_currentTarget != null && IsInstanceValid(_currentTarget) && 
                 _body.GlobalPosition.DistanceTo(_currentTarget.GlobalPosition) > PreferredCastDistance &&
                 CanAct())
@@ -306,7 +225,7 @@ public partial class EnemyBehavior : Node
             }
             break;
             case AIState.SlowApproach:
-    			SlowApproachPlayer();
+    			_movement.SlowApproach(_currentTarget);
     			break;
 			case AIState.Hesitating:
     			if (IsEnemyInRange(50.0f))
@@ -315,25 +234,19 @@ public partial class EnemyBehavior : Node
                     Hesitate();
                 break;
             case AIState.Casting:
-                _castTimer += (float)delta;
-
-                if (_bodySprite != null)
-                    _bodySprite.Modulate = (_castTimer * 2 % 1) > 0.5 ? Colors.White : Colors.Cyan;
-
-                if (_castTimer >= _pendingSpell.TotalCastTime)
+                if (_spell != null && _spell.IsCasting())
                 {
-                    // Завершили каст
-                    if (_bodySprite != null) _bodySprite.Modulate = Colors.White;
-
-                    // Применяем эффект только если цель всё ещё существует
-                    if (_currentTarget != null && IsInstanceValid(_currentTarget))
+                    _spell.TryCast(_currentTarget, delta);
+                    if (!_spell.IsCasting()) // каст завершился
                     {
-                        // ВСЕГДА вызываем CastSpell – это нанесёт урон и/или наложит статусы
-                        _skill.CastSpell(_pendingSpell, _currentTarget ?? _player);
-                        // Визуальные эффекты (снаряды/взрывы) временно убраны,
-                        // чтобы не дублировать урон. Они будут восстановлены позже
-                        // через отдельную систему визуализации.
+                        if (_bodySprite != null)
+                            _bodySprite.Modulate = Colors.White;
+                        EnterState(AIState.Attacking);
                     }
+                }
+                else
+                {
+                    // Если контроллер не кастует, выходим из состояния
                     EnterState(AIState.Attacking);
                 }
                 break;
@@ -345,7 +258,7 @@ public partial class EnemyBehavior : Node
                     EnterState(AIState.Attacking);
                     break;
                 }
-                MoveToPosition(delta);
+                _movement.MoveToPosition(_targetPosition, delta);
                 break;  
             case AIState.Idle:
                 // Если враг подошёл близко, контратакуем
@@ -536,7 +449,6 @@ public partial class EnemyBehavior : Node
             _originalPosition = _body.GlobalPosition;
 
         CurrentState = newState;
-        _attackTimer = 0f;
         if (_statusIconScene == null || _body == null) return;
 
         Texture2D iconTex = null;
@@ -564,75 +476,6 @@ public partial class EnemyBehavior : Node
 		}
 	}
 
-    // Движения и атака (базовые реализации)
-    private void MoveTowardTarget()
-    {
-         if (_currentTarget == null || !IsInstanceValid(_currentTarget)) return;
-        Vector2 desiredDirection = (_currentTarget.GlobalPosition - _body.GlobalPosition).Normalized();
-        _body.Velocity = ComputeAvoidanceVelocity(desiredDirection);
-    }
-
-    private void MoveToPosition(double delta)
-    {
-        float dist = _body.GlobalPosition.DistanceTo(_targetPosition);
-        if (dist < 10.0f)
-        {
-            _body.Velocity = Vector2.Zero;
-            AcquireTarget();
-            if (_currentTarget != null && _body.GlobalPosition.DistanceTo(_currentTarget.GlobalPosition) <= 40.0f)
-                EnterState(AIState.Attacking);
-            else
-                EnterState(AIState.Idle);
-            return;
-        }
-
-        Vector2 dir = (_targetPosition - _body.GlobalPosition).Normalized();
-        _body.Velocity = dir * Speed;
-        _body.MoveAndSlide();
-    }
-
-    private void FleeFromPlayer()
-    {
-        if (_currentTarget == null || !IsInstanceValid(_currentTarget)) return;
-        Vector2 desiredDirection = (_body.GlobalPosition - _currentTarget.GlobalPosition).Normalized();
-        _body.Velocity = ComputeAvoidanceVelocity(desiredDirection);
-    }
-
-    private void SlowApproachPlayer()
-    {
-        if (_currentTarget == null || !IsInstanceValid(_currentTarget)) return;
-        Vector2 desiredDirection = (_currentTarget.GlobalPosition - _body.GlobalPosition).Normalized();
-        _body.Velocity = ComputeAvoidanceVelocity(desiredDirection) * 0.3f;
-    }
-
-    private Vector2 ComputeAvoidanceVelocity(Vector2 desiredDirection)
-    {
-        Vector2 avoidance = Vector2.Zero;
-
-        // Проверяем всех врагов поблизости
-        foreach (var node in GetTree().GetNodesInGroup("Enemies"))
-        {
-            if (node == _body) continue;
-            var otherBody = node as CharacterBody2D;
-            if (otherBody == null) continue;
-
-            Vector2 toOther = otherBody.GlobalPosition - _body.GlobalPosition;
-            float distance = toOther.Length();
-            
-            if (distance < AvoidanceRadius && distance > 0.1f)
-            {
-                // Чем ближе, тем сильнее отталкивание
-                float strength = Mathf.InverseLerp(AvoidanceRadius, 0, distance);
-                Vector2 pushDir = -toOther.Normalized();
-                avoidance += pushDir * strength * AvoidanceStrength;
-            }
-        }
-
-        // Итоговое направление = желаемое + уклонение
-        Vector2 finalDir = (desiredDirection * Speed + avoidance).Normalized();
-        return finalDir * Speed;
-    }
-
     private void AttackTick(double delta)
     {
           if (_currentTarget == null || !IsInstanceValid(_currentTarget)) return;
@@ -650,64 +493,56 @@ public partial class EnemyBehavior : Node
         if (canCast)
         {
         
-            if (!CanAct())
+           // ========== ВЕТКА ДЛЯ МАГОВ ==========
+            if (_spell != null && _spell.CanCast())
             {
-                EnterState(AIState.Fleeing);
-                return;
-            }
-
-            // 1. Слишком далеко – идём на сближение
-            if (dist > PreferredCastDistance)
-            {
-                MoveTowardTarget();
-                return;
-            }
-
-            // 2. Если враг в идеальной зоне – останавливаемся и кастуем
-            if (dist > MinCastDistance)
-            {
-                _body.Velocity = Vector2.Zero;
-                TryCastSpell();
-                return;
-            }
-
-            // 3. Слишком близко – отступаем или бьём врукопашную, если разрешено
-            if (CanMelee)
-            {
-                _body.Velocity = Vector2.Zero;
-                _attackTimer += (float)delta;
-                if (_attackTimer >= AttackCooldown)
+                if (!CanAct())
                 {
-                    _attackTimer = 0f;
-                    var targetHealth = _currentTarget.GetNode<HealthComponent>("HealthComponent");
-                    targetHealth?.Damage(10);
-                    // визуал
-                    var attackScene = GD.Load<PackedScene>("res://Entitys/Specials/MeleeAttack.tscn");
-                    var attack = attackScene.Instantiate<MeleeAttack>();
-                    attack.Scale = new Vector2(2.5f, 2.5f);
-                    attack.GlobalPosition = _body.GlobalPosition.Lerp(_currentTarget.GlobalPosition, 0.5f);
-                    attack.LookAt(_currentTarget.GlobalPosition);
-                    attack.Damage = 10;
-                    GetTree().CurrentScene.AddChild(attack);
-                    GD.Print($"[{UnitName}] Бьёт врукопашную {_currentTarget.Name}!");
+                    EnterState(AIState.Fleeing);
+                    return;
+                }
+                if (dist > PreferredCastDistance)
+                {
+                    _movement.MoveToward(_currentTarget);
+                    return;
+                }
+                if (dist < MinCastDistance)
+                {
+                    // Слишком близко — либо бьём рукой, либо отступаем
+                    if (CanMelee)
+                    {
+                        _body.Velocity = Vector2.Zero;
+                        _combat.TryAttack(_currentTarget, delta);
+                    }
+                    else
+                    {
+                        EnterState(AIState.Fleeing);
+                    }
+                    return;
+                }
+
+                // Идеальная дистанция — кастуем
+                _body.Velocity = Vector2.Zero;
+                if (_spell.TryCast(_currentTarget, delta))
+                {
+                    // Если каст начался или идёт, переходим в состояние Casting
+                    if (_spell.IsCasting())
+                        EnterState(AIState.Casting);
+                    return;
                 }
             }
-            else
-            {
-                // Не умеет драться – отступаем
-                EnterState(AIState.Fleeing);
-            }
-            return;
         }
 
        // ========== ВЕТКА ДЛЯ ОБЫЧНЫХ БОЙЦОВ (без магии) ==========
+
+       // Ветка для обычных бойцов (без магии)
         if (!CanAct())
         {
             EnterState(AIState.Fleeing);
             return;
         }
 
-        // Если это командир (имеет SquadCommander) и он не в ближнем бою, переходим в командование
+        // Командир переходит в Commanding (оставляем без изменений)
         bool isCommander = _body?.GetNodeOrNull<SquadCommander>("SquadCommander") != null;
         if (isCommander && dist > MinCastDistance)
         {
@@ -715,31 +550,14 @@ public partial class EnemyBehavior : Node
             return;
         }
 
-        if (dist > 40.0f)
-        {
-            MoveTowardTarget();
-            return;
-        }
-
+        // Пытаемся атаковать
         _body.Velocity = Vector2.Zero;
-        _attackTimer += (float)delta;
-        if (_attackTimer >= AttackCooldown)
-        {
-            _attackTimer = 0f;
-            var targetHealth = _currentTarget.GetNode<HealthComponent>("HealthComponent");
-            targetHealth?.Damage(10);
+        if (_combat.TryAttack(_currentTarget, delta))
+            return;
 
-            // Визуал атаки
-            var attackScene = GD.Load<PackedScene>("res://Entitys/Specials/MeleeAttack.tscn");
-            var attack = attackScene.Instantiate<MeleeAttack>();
-            attack.Scale = new Vector2(2.5f, 2.5f);
-            attack.GlobalPosition = _body.GlobalPosition.Lerp(_currentTarget.GlobalPosition, 0.5f);
-            attack.LookAt(_currentTarget.GlobalPosition);
-            attack.Damage = 10;
-            GetTree().CurrentScene.AddChild(attack);
-
-            GD.Print($"[{UnitName}] Атакует {_currentTarget.Name}!");
-        }
+        // Если не можем атаковать (далеко) – идём на сближение
+        if (dist > 40.0f)
+            _movement.MoveToward(_currentTarget);
     }
 	
 

@@ -8,6 +8,7 @@ public partial class BaseArchetype : Node
     protected HealthComponent _health;
     protected SkillComponent _skill;
     protected SquadCommander _squad;
+    protected SpellController _spellController;
 
     protected ResourceComponent _resources;
 
@@ -19,6 +20,7 @@ public partial class BaseArchetype : Node
         _skill = _body.GetNodeOrNull<SkillComponent>("SkillComponent");
         _squad = _body.GetNodeOrNull<SquadCommander>("SquadCommander");
         _resources = _body.GetNodeOrNull<ResourceComponent>("ResourceComponent");
+        _spellController = _body.GetNodeOrNull<SpellController>("SpellController"); 
     }
 
     /// <summary>

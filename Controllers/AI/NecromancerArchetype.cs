@@ -35,7 +35,7 @@ public partial class NecromancerArchetype : BaseArchetype
         if (dist > PreferredCastDistance)
         {
             Vector2 dir = (target.GlobalPosition - _body.GlobalPosition).Normalized();
-            _body.Velocity = dir * 100f; // используем стандартную скорость, можно вынести в [Export]
+            _body.Velocity = dir * 100f;
             return true;
         }
 
@@ -47,16 +47,18 @@ public partial class NecromancerArchetype : BaseArchetype
             return true;
         }
 
-        // Идеальная дистанция — кастуем
+        // Идеальная дистанция — кастуем через SpellController
         _body.Velocity = Vector2.Zero;
         owner.ForceTarget(target);
-        owner.TryCastSpell(); 
+        if (_spellController != null)
+            _spellController.TryCast(target, delta);
+        else
+            _skill?.CastSpell(SelectSpell(_skill.GetKnownSpells(), target), target);
         return true;
     }
 
     private Node2D FindTarget()
     {
-        // Ищем врага, на котором ещё нет метки смерти
         Node2D bestTarget = null;
         float closestDist = float.MaxValue;
         foreach (var node in _body.GetTree().GetNodesInGroup("Enemies"))
@@ -68,7 +70,6 @@ public partial class NecromancerArchetype : BaseArchetype
             if (behavior == null || !FactionManager.AreHostile(_behavior.FactionId, behavior.FactionId))
                 continue;
 
-            // Проверяем, нет ли уже на нём эффекта raise_dead
             var statusComp = enemyNode.GetNodeOrNull<StatusEffectsComponent>("StatusEffectsComponent");
             if (statusComp != null && statusComp.HasEffect("raise_dead"))
                 continue;
@@ -85,7 +86,6 @@ public partial class NecromancerArchetype : BaseArchetype
 
     public override SpellData SelectSpell(List<SpellData> spells, Node2D currentTarget)
     {
-        // Если цель не помечена, используем "Поднять скелета"
         var targetBody = currentTarget as CharacterBody2D;
         if (targetBody != null)
         {
@@ -97,7 +97,6 @@ public partial class NecromancerArchetype : BaseArchetype
                     return raiseSpell;
             }
         }
-        // Иначе атакуем обычным заклинанием
         return spells.FirstOrDefault();
     }
 }

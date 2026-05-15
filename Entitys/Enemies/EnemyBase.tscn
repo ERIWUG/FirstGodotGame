@@ -7,6 +7,10 @@
 [ext_resource type="PackedScene" uid="uid://7712s1sh2pps" path="res://Scenes/UIBricks/HealthBar.tscn" id="6_sphj0"]
 [ext_resource type="Texture2D" uid="uid://cu4i03271ge7y" path="res://Sprites/Star.png" id="7_dnqxb"]
 [ext_resource type="PackedScene" uid="uid://gn84vpn5pfdf" path="res://Scenes/UIBricks/CastingBar.tscn" id="7_jxcxf"]
+[ext_resource type="Script" uid="uid://8q1bcoe3wghn" path="res://Controllers/AI/MovementController.cs" id="8_dnqxb"]
+[ext_resource type="Script" uid="uid://bu43sqgapi8wo" path="res://Controllers/AI/CombatController.cs" id="9_l2v7p"]
+[ext_resource type="Script" uid="uid://c2sqnb13iixrb" path="res://Controllers/AI/SpellController.cs" id="10_wcfcb"]
+[ext_resource type="Script" uid="uid://crwpemcyhqwxo" path="res://Controllers/AI/PersonalityComponent.cs" id="11_i6asc"]
 
 [node name="EnemyBase" type="CharacterBody2D" unique_id=457566220]
 
@@ -49,3 +53,18 @@ texture_filter = 3
 position = Vector2(-20, -44.999996)
 scale = Vector2(0.3125, 0.3125)
 texture = ExtResource("7_dnqxb")
+
+[node name="MovementController" type="Node" parent="." unique_id=752735144]
+script = ExtResource("8_dnqxb")
+
+[node name="CombatController" type="Node" parent="." unique_id=592629765]
+script = ExtResource("9_l2v7p")
+metadata/_custom_type_script = "uid://bu43sqgapi8wo"
+
+[node name="SpellController" type="Node" parent="." unique_id=1417193413]
+script = ExtResource("10_wcfcb")
+metadata/_custom_type_script = "uid://c2sqnb13iixrb"
+
+[node name="PersonalityComponent" type="Node" parent="." unique_id=993872955]
+script = ExtResource("11_i6asc")
+metadata/_custom_type_script = "uid://crwpemcyhqwxo"

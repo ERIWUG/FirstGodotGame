@@ -18,46 +18,6 @@ public partial class SquadTestSetup : Node2D
         CreateWall(new Vector2(0, -10), new Vector2(1220, 10));  // верхняя
         CreateWall(new Vector2(0, 810), new Vector2(1220, 10));  // нижняя
 
-        // --- Отряд А (теневой культ) ---
-        // Командир (Фанатик)
-        SpawnEnemy("res://Entitys/Enemies/Fanatic.tscn", new Vector2(150, 350), "shadow_cult", true);
-        // Огр (1)
-        SpawnEnemy("res://Entitys/Enemies/Ogre.tscn", new Vector2(200, 250), "shadow_cult");
-        // Рыцари (2)
-        SpawnEnemy("res://Entitys/Enemies/Guardian.tscn", new Vector2(250, 150), "shadow_cult");
-        SpawnEnemy("res://Entitys/Enemies/Guardian.tscn", new Vector2(250, 550), "shadow_cult");
-        // Бард (1)
-        SpawnEnemy("res://Entitys/Enemies/Bard.tscn", new Vector2(180, 450), "shadow_cult");
-        // Наёмник (1)
-        SpawnEnemy("res://Entitys/Enemies/Mercenary.tscn", new Vector2(300, 80), "shadow_cult");
-        // Эльф-лучник (1)
-        SpawnEnemy("res://Entitys/Enemies/ElfArcher.tscn", new Vector2(300, 600), "shadow_cult");
-        // Стражник (1)
-        SpawnEnemy("res://Entitys/Enemies/Assassin.tscn", new Vector2(300, 350), "shadow_cult");
-
-        SpawnEnemy("res://Entitys/Enemies/Necromancer.tscn", new Vector2(180, 300), "shadow_cult");
-
-        
-
-        // --- Отряд Б (наёмники) ---
-        // Командир (Наёмник-лидер)
-        SpawnEnemy("res://Entitys/Enemies/Mercenary.tscn", new Vector2(1050, 350), "mercenary", true);
-        // Огр (1)
-        SpawnEnemy("res://Entitys/Enemies/Ogre.tscn", new Vector2(1000, 450), "mercenary");
-        // Рыцари (2)
-        SpawnEnemy("res://Entitys/Enemies/Guardian.tscn", new Vector2(950, 150), "mercenary");
-        SpawnEnemy("res://Entitys/Enemies/Guardian.tscn", new Vector2(950, 550), "mercenary");
-        // Эльф-лучник (1)
-        SpawnEnemy("res://Entitys/Enemies/ElfArcher.tscn", new Vector2(1020, 250), "mercenary");
-        // Ведьма (1)
-        SpawnEnemy("res://Entitys/Enemies/Witch.tscn", new Vector2(980, 300), "mercenary");
-        // Наёмник (1)
-        SpawnEnemy("res://Entitys/Enemies/Mercenary.tscn", new Vector2(900, 100), "mercenary");
-        // Стражник (1)
-        SpawnEnemy("res://Entitys/Enemies/Assassin.tscn", new Vector2(900, 600), "mercenary");
-        SpawnEnemy("res://Entitys/Enemies/Healer.tscn", new Vector2(1100, 120), "mercenary");
-        SpawnEnemy("res://Entitys/Enemies/Healer.tscn", new Vector2(1100, 280), "mercenary");
-
         // UI
         var canvasLayer = new CanvasLayer();
         canvasLayer.Name = "CanvasLayer";
@@ -70,13 +30,24 @@ public partial class SquadTestSetup : Node2D
         var battleLog = battleLogScene.Instantiate<BattleLog>();
         canvasLayer.AddChild(battleLog);
         battleLog.Position = new Vector2(900, 10); // пример позиции, можно настроить в сцене
-        GD.Print($"[DEBUG] BattleLog создан и добавлен: {battleLog.Name}, родитель: {battleLog.GetParent()?.Name}");
-        // Собираем отряды заново, когда все уже созданы
+       
+
+        var squadA = GD.Load<SquadData>("res://Resources/Squads/SquadA.tres");
+        var squadB = GD.Load<SquadData>("res://Resources/Squads/SquadB.tres");
+
+        // Спавним отряды
+        SquadBuilder.SpawnSquad(this, squadA);
+        SquadBuilder.SpawnSquad(this, squadB);
+
+        // Собираем отряды для командиров
         foreach (var enemy in GetTree().GetNodesInGroup("Enemies"))
         {
             var commander = enemy.GetNodeOrNull<SquadCommander>("SquadCommander");
             commander?.GatherSquad();
         }
+
+        var victoryManager = new VictoryDefeatManager();
+        AddChild(victoryManager);
     }
 
     public override void _Input(InputEvent @event)

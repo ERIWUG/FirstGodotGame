@@ -1,0 +1,64 @@
+[gd_resource type="Resource" script_class="SquadData" format=3 uid="uid://cr5dfmrtqjbp1"]
+
+[ext_resource type="Script" uid="uid://dx13c2ne4n8df" path="res://Resources/SquadData/UnitEntry.cs" id="1_jfqxu"]
+[ext_resource type="PackedScene" uid="uid://rtj4jv50gkqx" path="res://Entitys/Enemies/Mercenary.tscn" id="2_bru80"]
+[ext_resource type="Script" uid="uid://de8aa13h2bxxc" path="res://Resources/SquadData/SquadData.cs" id="2_rvcq5"]
+[ext_resource type="PackedScene" uid="uid://qv7qrl0svy8p" path="res://Entitys/Enemies/Ogre.tscn" id="3_vqtvd"]
+[ext_resource type="PackedScene" uid="uid://bx2s0v3olnj4m" path="res://Entitys/Enemies/Guardian.tscn" id="4_1jh8d"]
+[ext_resource type="PackedScene" uid="uid://52yox5keka7d" path="res://Entitys/Enemies/ElfArcher.tscn" id="5_0owqi"]
+[ext_resource type="PackedScene" uid="uid://cnlqnuawar8gu" path="res://Entitys/Enemies/Witch.tscn" id="6_vap5s"]
+
+[sub_resource type="Resource" id="Resource_hxery"]
+script = ExtResource("1_jfqxu")
+UnitScene = ExtResource("2_bru80")
+Position = Vector2(1050, 350)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_xqdfg"]
+script = ExtResource("1_jfqxu")
+UnitScene = ExtResource("3_vqtvd")
+Position = Vector2(1000, 450)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_es7pf"]
+script = ExtResource("1_jfqxu")
+UnitScene = ExtResource("4_1jh8d")
+Position = Vector2(950, 150)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_dmq7y"]
+script = ExtResource("1_jfqxu")
+UnitScene = ExtResource("4_1jh8d")
+Position = Vector2(950, 550)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_u618q"]
+script = ExtResource("1_jfqxu")
+UnitScene = ExtResource("5_0owqi")
+Position = Vector2(1020, 250)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_6elmo"]
+script = ExtResource("1_jfqxu")
+UnitScene = ExtResource("6_vap5s")
+Position = Vector2(900, 100)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_p63me"]
+script = ExtResource("1_jfqxu")
+UnitScene = ExtResource("2_bru80")
+Position = Vector2(900, 100)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_gjood"]
+script = ExtResource("1_jfqxu")
+UnitScene = ExtResource("4_1jh8d")
+Position = Vector2(900, 600)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[resource]
+script = ExtResource("2_rvcq5")
+SquadName = "Безликие Чмони"
+FactionId = "mercenary"
+Units = Array[ExtResource("1_jfqxu")]([SubResource("Resource_hxery"), SubResource("Resource_xqdfg"), SubResource("Resource_es7pf"), SubResource("Resource_dmq7y"), SubResource("Resource_u618q"), SubResource("Resource_6elmo"), SubResource("Resource_p63me"), SubResource("Resource_gjood")])
+metadata/_custom_type_script = "uid://de8aa13h2bxxc"

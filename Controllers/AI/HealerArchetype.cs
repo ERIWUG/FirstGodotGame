@@ -78,20 +78,27 @@ public partial class HealerArchetype : BaseArchetype
             return true;
         }
 
-        // 2. Если можем кастовать – кастуем
+        // 2. Кастуем через SpellController
+        if (_spellController != null)
+        {
+            _body.Velocity = Vector2.Zero;
+            _spellController.TryCast(ally, delta);
+            return true;
+        }
+
+        // 3. Запасной вариант (если SpellController отсутствует)
         if (_skill != null && _resources != null)
         {
             var spell = SelectSpell(_skill.GetKnownSpells(), ally);
             if (spell != null && _skill.CanCast(spell))
             {
-                // Останавливаемся и начинаем каст
                 _body.Velocity = Vector2.Zero;
-                owner.TryCastSpell(); // используем существующий метод врага
+                _skill.CastSpell(spell, ally);
                 return true;
             }
         }
 
-        // 3. Если каст невозможен (кулдаун, нет маны) – просто ждём
+        // 4. Если каст невозможен – просто ждём
         _body.Velocity = Vector2.Zero;
         return true;
     }

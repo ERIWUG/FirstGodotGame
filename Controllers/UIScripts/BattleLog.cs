@@ -2,8 +2,8 @@ using Godot;
 
 public partial class BattleLog : Panel
 {
-    private Label _logLabel;
-    private ScrollContainer _scroll;
+    private RichTextLabel _log;
+    private Color _defaultColor = Colors.White;
 
     public override void _Ready()
     {
@@ -18,32 +18,25 @@ public partial class BattleLog : Panel
         panelStyle.BgColor = new Color(0, 0, 0, 0.7f);
         this.AddThemeStyleboxOverride("panel", panelStyle);
 
-        // ScrollContainer с отключённой горизонтальной прокруткой
-        _scroll = new ScrollContainer();
-        _scroll.AnchorRight = 1;
-        _scroll.AnchorBottom = 1;
-        _scroll.HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled;
-        AddChild(_scroll);
+        // RichTextLabel с автопрокруткой и переносом строк
+        _log = new RichTextLabel();
+        _log.AnchorRight = 1;
+        _log.AnchorBottom = 1;
+        _log.BbcodeEnabled = true;
+        _log.ScrollFollowing = true;
+        _log.AutowrapMode = TextServer.AutowrapMode.Word;
+        AddChild(_log);
 
-        // Label для текста
-        _logLabel = new Label();
-        _logLabel.SizeFlagsHorizontal = Control.SizeFlags.Fill;
-        _logLabel.AutowrapMode = TextServer.AutowrapMode.Word; // перенос по словам
-        // Гарантируем, что Label не сжимается меньше ширины ScrollContainer
-        _logLabel.CustomMinimumSize = new Vector2(_scroll.Size.X, 0);
-        _scroll.AddChild(_logLabel);
-
-        // Подписываемся на сигнал
+        // Подписываемся на сигналы
         SquadJournal.Instance.EntryAdded += OnEntryAdded;
+        SquadJournal.Instance.ColoredEntryAdded += OnColoredEntryAdded;
 
-        // Загружаем старые записи
+        // Загружаем старые записи (все как обычный текст)
         var allEntries = SquadJournal.Instance.GetAllEntries();
-        if (allEntries.Count > 0)
-            _logLabel.Text = string.Join("\n", allEntries);
-        else
-            _logLabel.Text = "";
+        foreach (var entry in allEntries)
+            _log.AppendText(entry + "\n");
 
-        // Устанавливаем позицию справа
+        // Позиция справа
         CallDeferred(nameof(SetFixedPosition));
         Visible = false;
     }
@@ -51,32 +44,25 @@ public partial class BattleLog : Panel
     private void SetFixedPosition()
     {
         var windowSize = DisplayServer.WindowGetSize();
-        float x = windowSize.X - this.Size.X - 20; // 20 пикселей от правого края
+        float x = windowSize.X - this.Size.X - 20;
         float y = 50;
         this.SetGlobalPosition(new Vector2(x, y));
     }
 
     private void OnEntryAdded(string entry)
     {
-        // Добавляем новую строку
-        if (string.IsNullOrEmpty(_logLabel.Text))
-            _logLabel.Text = entry;
-        else
-            _logLabel.Text += "\n" + entry;
-
-        // Прокручиваем вниз
-        CallDeferred(nameof(ScrollToBottom));
+        _log.AppendText(entry + "\n");
     }
 
-    private void ScrollToBottom()
+    private void OnColoredEntryAdded(string speakerName, Color nameColor, string message)
     {
-        _scroll.ScrollVertical = (int)_scroll.GetVScrollBar().MaxValue;
+        // Цвет имени — hex-строка, сообщение — белое
+        string colorHex = nameColor.ToHtml(false);
+        _log.AppendText($"[color={colorHex}]{speakerName}[/color]: {message}\n");
     }
 
     public void ToggleVisible()
     {
         Visible = !Visible;
-        if (Visible)
-            ScrollToBottom();
     }
 }

@@ -1,0 +1,66 @@
+[gd_resource type="Resource" script_class="SquadData" format=3 uid="uid://b5lh3738speae"]
+
+[ext_resource type="Script" uid="uid://de8aa13h2bxxc" path="res://Resources/SquadData/SquadData.cs" id="1_fifx8"]
+[ext_resource type="Script" uid="uid://dx13c2ne4n8df" path="res://Resources/SquadData/UnitEntry.cs" id="1_uhq1j"]
+[ext_resource type="PackedScene" uid="uid://dk6ptxwp3ye5" path="res://Entitys/Enemies/Fanatic.tscn" id="2_un1wi"]
+[ext_resource type="PackedScene" uid="uid://qv7qrl0svy8p" path="res://Entitys/Enemies/Ogre.tscn" id="3_ej4mf"]
+[ext_resource type="PackedScene" uid="uid://bx2s0v3olnj4m" path="res://Entitys/Enemies/Guardian.tscn" id="4_6sc5i"]
+[ext_resource type="PackedScene" uid="uid://drr8uywc0npmi" path="res://Entitys/Enemies/Bard.tscn" id="5_r50nb"]
+[ext_resource type="PackedScene" uid="uid://rtj4jv50gkqx" path="res://Entitys/Enemies/Mercenary.tscn" id="6_pk25n"]
+[ext_resource type="PackedScene" uid="uid://52yox5keka7d" path="res://Entitys/Enemies/ElfArcher.tscn" id="7_52xy7"]
+[ext_resource type="PackedScene" uid="uid://dx7t6vvx8udwb" path="res://Entitys/Enemies/Assassin.tscn" id="8_i1s7h"]
+
+[sub_resource type="Resource" id="Resource_u6dx7"]
+script = ExtResource("1_uhq1j")
+UnitScene = ExtResource("2_un1wi")
+Position = Vector2(150, 350)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_u4pgm"]
+script = ExtResource("1_uhq1j")
+UnitScene = ExtResource("3_ej4mf")
+Position = Vector2(200, 250)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_tenws"]
+script = ExtResource("1_uhq1j")
+UnitScene = ExtResource("4_6sc5i")
+Position = Vector2(250, 150)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_5uifb"]
+script = ExtResource("1_uhq1j")
+UnitScene = ExtResource("4_6sc5i")
+Position = Vector2(250, 550)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_w6nna"]
+script = ExtResource("1_uhq1j")
+UnitScene = ExtResource("5_r50nb")
+Position = Vector2(180, 450)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_pd2lg"]
+script = ExtResource("1_uhq1j")
+UnitScene = ExtResource("6_pk25n")
+Position = Vector2(300, 80)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_ayi27"]
+script = ExtResource("1_uhq1j")
+UnitScene = ExtResource("7_52xy7")
+Position = Vector2(300, 600)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[sub_resource type="Resource" id="Resource_kx3ah"]
+script = ExtResource("1_uhq1j")
+UnitScene = ExtResource("8_i1s7h")
+Position = Vector2(300, 350)
+metadata/_custom_type_script = "uid://dx13c2ne4n8df"
+
+[resource]
+script = ExtResource("1_fifx8")
+SquadName = "Кровавые Вороны"
+FactionId = "shadow_cult"
+Units = Array[ExtResource("1_uhq1j")]([SubResource("Resource_u6dx7"), SubResource("Resource_u4pgm"), SubResource("Resource_tenws"), SubResource("Resource_5uifb"), SubResource("Resource_w6nna"), SubResource("Resource_pd2lg"), SubResource("Resource_ayi27"), SubResource("Resource_kx3ah")])
+metadata/_custom_type_script = "uid://de8aa13h2bxxc"

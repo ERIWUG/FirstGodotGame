@@ -26,6 +26,7 @@ public partial class EnemyBehavior : Node
     [Signal] public delegate void CastingFinishedEventHandler();
 
     public AIState CurrentState { get; private set; } = AIState.Idle;
+    private bool _permanentRetreat = false;
 
     public Node2D GetCurrentTarget() => _currentTarget;
 
@@ -161,6 +162,16 @@ public partial class EnemyBehavior : Node
         
     }
 
+    public bool IsPermanentlyFleeing()
+    {
+        return _permanentRetreat && CurrentState == AIState.Fleeing;
+    }
+
+    public void SetPermanentRetreat()
+    {
+        _permanentRetreat = true;
+    }
+
     public override void _Process(double delta)
     {
         if (GetTree().Paused) return;
@@ -219,7 +230,7 @@ public partial class EnemyBehavior : Node
             _movement.FleeFrom(_currentTarget);
             if (_currentTarget != null && IsInstanceValid(_currentTarget) && 
                 _body.GlobalPosition.DistanceTo(_currentTarget.GlobalPosition) > PreferredCastDistance &&
-                CanAct())
+                CanAct()&& !_permanentRetreat)
             {
                 EnterState(AIState.Attacking);
             }
@@ -344,6 +355,7 @@ public partial class EnemyBehavior : Node
         }
 		else if (order.Type == OrderType.Retreat)
         {
+            _permanentRetreat = true;
             EnterState(AIState.Fleeing);
             var squad = _body?.GetNodeOrNull<SquadCommander>("SquadCommander");
             if (squad != null)

@@ -58,6 +58,7 @@ TemporaryDependencyNodeTargetIdentifier=net8.0
 Controllers/AI/
  AssassinArchetype.cs
  BaseArchetype.cs
+ BondComponent.cs
  CombatController.cs
  EnemyBehavior.cs
  EnemySkillManager.cs
@@ -69,6 +70,7 @@ Controllers/AI/
  PersonalityComponent.cs
  SpellController.cs
  SquadCommander.cs
+ TitleComponent.cs
 Controllers/
  Logs/SquadJournal.cs
  Manager/

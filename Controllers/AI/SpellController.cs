@@ -13,6 +13,7 @@ public partial class SpellController : Node
     private ResourceComponent _resources;
     private BaseArchetype _archetype;
     private MovementController _movement;
+    [Export] public float DamageMultiplier { get; set; } = 1.0f;
 
     private float _castTimer;
     private SpellData _pendingSpell;
@@ -95,7 +96,7 @@ public partial class SpellController : Node
             var projectile = projectileScene.Instantiate<Projectile>();
             projectile.Position = _body.GlobalPosition;
             projectile.Source = _body;
-            projectile.Damage = _pendingSpell.TotalManaCost * 2;
+            projectile.Damage = _pendingSpell.TotalManaCost * 2 * DamageMultiplier;
             var targetPos = target.GlobalPosition;
             projectile.Velocity = (targetPos - _body.GlobalPosition).Normalized() * 300f;
             projectile.GlobalPosition = _body.GlobalPosition;
@@ -106,7 +107,7 @@ public partial class SpellController : Node
             var aoeScene = GD.Load<PackedScene>("res://Entitys/Specials/AoeEffect.tscn");
             var aoe = aoeScene.Instantiate<AoeEffect>();
             aoe.GlobalPosition = target.GlobalPosition;
-            aoe.Damage = _pendingSpell.TotalManaCost * 2;
+            aoe.Damage = _pendingSpell.TotalManaCost * 2 * DamageMultiplier;
             _body.GetTree().CurrentScene.AddChild(aoe);
         }
 

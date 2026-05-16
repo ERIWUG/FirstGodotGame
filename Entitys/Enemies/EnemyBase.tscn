@@ -11,6 +11,8 @@
 [ext_resource type="Script" uid="uid://bu43sqgapi8wo" path="res://Controllers/AI/CombatController.cs" id="9_l2v7p"]
 [ext_resource type="Script" uid="uid://c2sqnb13iixrb" path="res://Controllers/AI/SpellController.cs" id="10_wcfcb"]
 [ext_resource type="Script" uid="uid://crwpemcyhqwxo" path="res://Controllers/AI/PersonalityComponent.cs" id="11_i6asc"]
+[ext_resource type="Script" uid="uid://dgcjprssdxjdc" path="res://Controllers/AI/BondComponent.cs" id="12_fv5qj"]
+[ext_resource type="Script" uid="uid://bcc1c88ntqddf" path="res://Controllers/AI/TitleComponent.cs" id="13_vyu6e"]
 
 [node name="EnemyBase" type="CharacterBody2D" unique_id=457566220]
 
@@ -68,3 +70,11 @@ metadata/_custom_type_script = "uid://c2sqnb13iixrb"
 [node name="PersonalityComponent" type="Node" parent="." unique_id=993872955]
 script = ExtResource("11_i6asc")
 metadata/_custom_type_script = "uid://crwpemcyhqwxo"
+
+[node name="BondComponent" type="Node" parent="." unique_id=1478226445]
+script = ExtResource("12_fv5qj")
+metadata/_custom_type_script = "uid://dgcjprssdxjdc"
+
+[node name="TitleComponent" type="Node" parent="." unique_id=2082078789]
+script = ExtResource("13_vyu6e")
+metadata/_custom_type_script = "uid://bcc1c88ntqddf"
